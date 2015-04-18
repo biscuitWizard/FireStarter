@@ -19,19 +19,19 @@ public class EntityManager : BaseMonoBehaviour {
 
 	}
 
-	public EntityBase CreateGoblin() {
+	public EntityBase CreateGoblin(Vector2 position) {
+		var goblin = Instantiate (GoblinPrefab);
+	}
+
+	public EntityBase CreateWatchman(Vector2 position) {
 		return null;
 	}
 
-	public EntityBase CreateWatchman() {
+	public EntityBase CreatePickle(Vector2 position) {
 		return null;
 	}
 
-	public EntityBase CreatePickle() {
-		return null;
-	}
-
-	public EntityBase CreateFireman() {
+	public EntityBase CreateFireman(Vector2 position) {
 		return null;
 	}
 
