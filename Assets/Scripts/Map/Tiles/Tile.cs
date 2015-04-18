@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Tile : MonoBehaviour {
-
 	public SpriteRenderer spriteRenderer;
 	public Vector2 Position { get; private set; }
-	public TileState[] ActiveStates;
-	private readonly IList<TileState> _states = new List<TileState>();
+	public bool HasBuilding = true;
+	public bool IsFlammable = true;
+	private FireStage _fireSeverity;
 
 	// Use this for initialization
 	void Awake () {
@@ -20,11 +20,11 @@ public class Tile : MonoBehaviour {
 		Position = position;
 	}
 
-	public void AddTileState(TileState state) {
-
+	public void SetFire(FireStage severity) {
+		_fireSeverity = severity;
 	}
 
-	public void RemoveTileState(TileState state) {
-
+	public FireStage GetFireSeverity() {
+		return _fireSeverity;
 	}
 }

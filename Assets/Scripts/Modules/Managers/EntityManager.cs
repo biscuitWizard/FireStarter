@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 [RequireComponent(typeof(GameModule))]
 public class EntityManager : BaseMonoBehaviour {
@@ -8,24 +10,45 @@ public class EntityManager : BaseMonoBehaviour {
 	public GameObject PicklePrefab;
 	public GameObject FiremanPrefab;
 
-	void MoveEntityTo(EntityBase entity, Vector2 newPosition) {
+	private readonly IList<EntityBase> _goblins = new List<EntityBase>();
+	private readonly IList<EntityBase> _watchmen = new List<EntityBase>();
+	private readonly IList<EntityBase> _pickles = new List<EntityBase>();
+	private readonly IList<EntityBase> _firemen = new List<EntityBase>();
+
+	public void MoveEntityTo(EntityBase entity, Vector2 newPosition) {
 
 	}
 
-	EntityBase CreateGoblin() {
+	public EntityBase CreateGoblin() {
 		return null;
 	}
 
-	EntityBase CreateWatchman() {
+	public EntityBase CreateWatchman() {
 		return null;
 	}
 
-	EntityBase CreatePickle() {
+	public EntityBase CreatePickle() {
 		return null;
 	}
 
-	EntityBase CreateFireman() {
+	public EntityBase CreateFireman() {
 		return null;
+	}
+
+	public EntityBase[] GetPickles() {
+		return _pickles.ToArray ();
+	}
+
+	public EntityBase[] GetFiremen() {
+		return _firemen.ToArray ();
+	}
+
+	public EntityBase[] GetGoblins() {
+		return _goblins.ToArray ();
+	}
+
+	public EntityBase[] GetWatchmen() {
+		return _watchmen.ToArray ();
 	}
 
 	void DestroyEntity(EntityBase entity) {
