@@ -27,4 +27,12 @@ public class Tile : MonoBehaviour {
 	public FireStage GetFireSeverity() {
 		return _fireSeverity;
 	}
+
+	public bool CanSetOnFire(){
+		if (this._fireSeverity == FireStage.Flammable){
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
