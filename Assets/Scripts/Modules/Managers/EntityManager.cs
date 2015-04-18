@@ -30,15 +30,33 @@ public class EntityManager : BaseMonoBehaviour {
 	}
 
 	public EntityBase CreateWatchman(Vector2 position) {
-		return null;
+		var watchman = Instantiate (WatchmanPrefab);
+		var watchmanEntity = watchman.GetComponent<WatchmanEntity> ();
+
+		_watchmen.Add (watchmanEntity);
+		MoveEntityTo (watchmanEntity, position);
+
+		return watchmanEntity;
 	}
 
 	public EntityBase CreatePickle(Vector2 position) {
-		return null;
+		var pickle = Instantiate (PicklePrefab);
+		var pickleEntity = pickle.GetComponent<PickleEntity> ();
+		
+		_pickles.Add (pickleEntity);
+		MoveEntityTo (pickleEntity, position);
+		
+		return pickleEntity;
 	}
 
 	public EntityBase CreateFireman(Vector2 position) {
-		return null;
+		var fireman = Instantiate (WatchmanPrefab);
+		var firemanEntity = fireman.GetComponent<FiremanEntity> ();
+		
+		_firemen.Add (firemanEntity);
+		MoveEntityTo (firemanEntity, position);
+		
+		return firemanEntity;
 	}
 
 	public EntityBase[] GetPickles() {
