@@ -11,7 +11,17 @@ public class PickleManager : MonoBehaviour {
 		return EntityManager.GetPickles ().Any (p => p.GetLocation () == location);
 	}
 
-	public Vector2 GetClosestPickleInRange(Vector2 location, int distance = 5) {
+
+	public bool IsPickleInRange(Vector2 location, int distance = 5){
+
+		if (GetClosestPickleInRange (location, distance) != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public EntityBase GetClosestPickleInRange(Vector2 location, int distance = 5) {
 
 		var picklesInRange = EntityManager.GetPickles ().Select (p => {
 			var pickleLocation = p.GetLocation();
@@ -21,7 +31,7 @@ public class PickleManager : MonoBehaviour {
 			return new PickleDistance(p, Mathf.Sqrt(Mathf.Pow (xd, 2) + Mathf.Pow (yd,2)));
 		}).OrderBy (pd => pd.Distance);
 
-		return picklesInRange.First ().Pickle.GetLocation();
+		return picklesInRange.First ().Pickle;
 	}
 
 	private class PickleDistance {

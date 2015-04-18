@@ -6,7 +6,9 @@ public class GoblinManager : MonoBehaviour {
 	
 	public GameObject Goblinprefab;
 	public float GoblinIgniteTilePercent = .5f;
-	
+	public EntityManager EntityManager;
+	public PickleManager PickleManager;
+
 	// Use this for initialization
 	void Start () {
 	}
@@ -22,7 +24,7 @@ public class GoblinManager : MonoBehaviour {
 			if (PickleManager.IsPicklePresent(location)){ // Are we at a pickle?
 				// Eat it!
 				
-			} else if (PickleManager.GetClosestPickleInRange(location)){ // Is there a pickle in range?
+			} else if (PickleManager.IsPickleInRange(location)){ // Is there a pickle in range?
 				// Find it!
 				
 			} else if (tile.CanSetOnFire()){ // Can we set something on fire?
