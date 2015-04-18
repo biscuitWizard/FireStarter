@@ -1,21 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Camera))]
+[RequireComponent(typeof(Camera), typeof(PixelPerfectCamera))]
 public class CameraController : BaseMonoBehaviour {
 
+	public PixelPerfectCamera ZoomController;
 	public bool CameraLocked = false;
-	private Vector2 _mapTopLeftCorner;
-	private Vector2 _mapSize;
+	public MapModule BoundMap;
+	public float ScrollSensitivity = 0.25f;
+	public float MaxZoom = 0.1f;
+	public float MinZoom = 0.5f;
 
 	// Use this for initialization
 	void Awake () {
 		Messenger<bool>.AddListener ("lockCamera", OnLockCamera);
 		Messenger.AddListener<bool> ("isCameraLocked", OnIsCameraLocked);
-	}
-
-	void Start() {
-		Messenger.Broadcast<Vector4> ("getMapBorders", OnGetMapBorders);
+		Messenger<Vector2, float>.AddListener ("cameraPanToAndWait", OnCameraPanToAndWait);
 	}
 	
 	// Update is called once per frame
@@ -33,12 +33,17 @@ public class CameraController : BaseMonoBehaviour {
 			verticalMovement = Input.GetAxis ("Vertical");
 		}
 
-		transform.Translate (horizontalMovement, verticalMovement, 0);
-	}
+		if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
+			var zoomMovement = Input.GetAxis ("Mouse ScrollWheel") > 0 
+				    ? ScrollSensitivity * Time.deltaTime
+					: ScrollSensitivity * Time.deltaTime * -1;
+			if(ZoomController.Zoom < MaxZoom
+			   && ZoomController.Zoom > MinZoom) {
+				ZoomController.SetCameraZoom (ZoomController.Zoom + zoomMovement);
+			}
+		}
 
-	void OnGetMapBorders(Vector4 borders) {
-		_mapTopLeftCorner = new Vector2 (borders.x, borders.y);
-		_mapSize = new Vector2 (borders.w, borders.z);
+		transform.Translate (horizontalMovement, verticalMovement, 0);
 	}
 
 	void OnLockCamera(bool cameraLock) {
@@ -47,5 +52,9 @@ public class CameraController : BaseMonoBehaviour {
 
 	bool OnIsCameraLocked() {
 		return CameraLocked;
+	}
+
+	void OnCameraPanToAndWait(Vector2 tile, float seconds) {
+
 	}
 }

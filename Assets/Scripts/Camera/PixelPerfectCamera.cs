@@ -7,7 +7,6 @@ public class PixelPerfectCamera : MonoBehaviour {
 	public float PixelsToUnits = 100f;
 	public float Zoom = 1;
 	private Camera _camera;
-	private float _currentZoom;
 
 	// Use this for initialization
 	void Start () {
@@ -16,11 +15,11 @@ public class PixelPerfectCamera : MonoBehaviour {
 		SetCameraZoom (Zoom);
 	}
 
-	void SetCameraZoom(float newZoom) {
+	public void SetCameraZoom(float newZoom) {
 		var unitsPerPixel = 1f / (PixelsToUnits * Zoom);
 		
 		_camera.orthographicSize = (Screen.height / 2f) * unitsPerPixel;
 
-		_currentZoom = newZoom;
+		Zoom = newZoom;
 	}
 }

@@ -3,13 +3,29 @@ using System.Collections;
 
 public class GameModule : BaseMonoBehaviour {
 
+	public MapModule Map;
+	public bool StartGameOnLoad = false;
+	public FireManager Fire;
+	public WeatherManager Weather;
+	//public GoblinManager Goblin;
+	//public PoliceManager Police;
+	//public FiremenManager Firemen;
+
 	// Use this for initialization
 	void Start () {
-	
+		// Test purposes
+		if (StartGameOnLoad) {
+			NewGame ();
+		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public void NewGame() {
+		Map.GenerateMap ();
+		Weather.GenerateWeather ();
+		Fire.GenerateFire ();
+		//Goblin.GenerateGoblins();
+		//Police.GeneratePolice();
+		//Firemen.GenerateFiremen();
+		Messenger.Broadcast ("newGameStarted");
 	}
 }
