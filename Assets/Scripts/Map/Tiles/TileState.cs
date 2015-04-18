@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class TileState : MonoBehaviour {
+	public string StateName;
 
 	// Use this for initialization
 	void Start () {
