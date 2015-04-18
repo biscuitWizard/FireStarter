@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameModule : MonoBehaviour {
+public class GameModule : BaseMonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

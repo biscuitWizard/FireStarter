@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MapModule : BaseMonoBehaviour {
-
-	public bool RenderOnStart = false;
-	public bool GenerateOnStart = false;
+public class SoundModule : BaseMonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
