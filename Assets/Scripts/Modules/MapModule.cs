@@ -11,11 +11,9 @@ public class MapModule : BaseMonoBehaviour {
 
 	private GameObject _root;
 	private Tile[,] _mapTiles; 
-	private Dictionary<Vector2, Item> _items = new Dictionary<Vector2, Item>();
 
 	// Use this for initialization
 	void Awake() {
-		Messenger<Vector2, Item>.AddListener ("addItemToMap", AddItemToMap);
 		// Create the root
 		_root = new GameObject ("Map Root");
 	}
@@ -27,15 +25,6 @@ public class MapModule : BaseMonoBehaviour {
 
 	public Rect GetMapScreenBounds() {
 		return new Rect();
-	}
-
-	public void AddItemToMap(Vector2 coords, Item i) {
-		if (_mapTiles == null)
-			return;
-		
-		i.transform.SetParent (_mapTiles [(int)coords.x, (int)coords.y].transform);
-		i.transform.localPosition = Vector2.zero;
-		_items.Add (new Vector2((int)coords.x, (int)coords.y), i);
 	}
 
 	Tile CreateTile(float x, float y, GameObject prefab) {
@@ -54,13 +43,7 @@ public class MapModule : BaseMonoBehaviour {
 			DestroyImmediate(tile);
 		}
 
-		foreach (var item in _items.Values) {
-			DestroyImmediate(item);
-		}
-
 		_mapTiles = null;
-		_items.Clear ();
-
 	}
 
 	public void GenerateMap() {
