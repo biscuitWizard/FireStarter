@@ -21,6 +21,12 @@ public class EntityManager : BaseMonoBehaviour {
 
 	public EntityBase CreateGoblin(Vector2 position) {
 		var goblin = Instantiate (GoblinPrefab);
+		var goblinEntity = goblin.GetComponent<GoblinEntity> ();
+
+		_goblins.Add (goblinEntity);
+		MoveEntityTo (goblinEntity, position);
+
+		return goblinEntity;
 	}
 
 	public EntityBase CreateWatchman(Vector2 position) {
