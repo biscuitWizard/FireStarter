@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WatchmanEntity : EntityBase {
+public class PickleEntity : EntityBase {
 
 	// Use this for initialization
 	void Start () {
