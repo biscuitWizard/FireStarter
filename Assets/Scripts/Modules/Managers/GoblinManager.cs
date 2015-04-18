@@ -19,10 +19,10 @@ public class GoblinManager : MonoBehaviour {
 			
 			var tile = goblinEntity.GetTile();
 			var location = goblinEntity.GetLocation();
-			if (PickleManager.isPicklePresent(location)){ // Are we at a pickle?
+			if (PickleManager.IsPicklePresent(location)){ // Are we at a pickle?
 				// Eat it!
 				
-			} else if (PickleManager.isPickleInRange(location)){ // Is there a pickle in range?
+			} else if (PickleManager.GetClosestPickleInRange(location)){ // Is there a pickle in range?
 				// Find it!
 				
 			} else if (tile.CanSetOnFire()){ // Can we set something on fire?
