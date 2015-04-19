@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(SpriteRenderer), typeof(TileRenderer))]
 public class Tile : MonoBehaviour {
 	public SpriteRenderer spriteRenderer;
+	public TileRenderer tileRenderer;
 	public Vector2 Position { get; private set; }
 	public bool HasBuilding = true;
 	public FireStage StartingFireStage = FireStage.Flammable;
@@ -29,10 +30,12 @@ public class Tile : MonoBehaviour {
 			|| severity == FireStage.NotFlammable) {
 
 			// Clear graphics for fire.
+			tileRenderer.ClearFire();
 			return;
 		}
 
 		// Set graphics for fire level.
+		tileRenderer.SetFire (severity);
 	}
 
 	public FireStage GetFireSeverity() {
