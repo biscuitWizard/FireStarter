@@ -6,6 +6,7 @@ using System.Linq;
 [RequireComponent(typeof(GameModule))]
 public class EntityManager : BaseMonoBehaviour {
 	public MapModule Map;
+	public GameModule Game;
 
 	public GameObject GoblinPrefab;
 	public GameObject WatchmanPrefab;
@@ -17,23 +18,21 @@ public class EntityManager : BaseMonoBehaviour {
 	private readonly IList<EntityBase> _pickles = new List<EntityBase>();
 	private readonly IList<EntityBase> _firemen = new List<EntityBase>();
 
-	// TODO: change this to the correct value
-	private int _mapMax = 10;
-
 	public List<Vector2> getLegalMoves(Vector2 currentPosition){
 
 		List<Vector2> legalMoves = new List<Vector2> ();
+		var mapSize = Game.GetMapSize();
 
 		if (currentPosition.x != 0){
 			legalMoves.Add (new Vector2 (currentPosition.x-1, currentPosition.y));
 		}
-		if (currentPosition.x != _mapMax-1){
+		if (currentPosition.x != mapSize.x-1){
 			legalMoves.Add (new Vector2 (currentPosition.x+1, currentPosition.y));
 		}
 		if (currentPosition.y != 0){
 			legalMoves.Add (new Vector2 (currentPosition.x, currentPosition.y-1));
 		}
-		if (currentPosition.y != _mapMax-1){
+		if (currentPosition.y != mapSize.y-1){
 			legalMoves.Add (new Vector2 (currentPosition.x, currentPosition.y+1));
 		}
 
