@@ -23,10 +23,10 @@ public class GoblinManager : MonoBehaviour {
 			var location = goblinEntity.GetLocation();
 			if (PickleManager.IsPicklePresent(location)){ // Are we at a pickle?
 				// Eat it!
-				
+				PickleManager.EatPickleAtLocation(location);
 			} else if (PickleManager.IsPickleInRange(location)){ // Is there a pickle in range?
 				// Find it!
-				
+				EntityManager.MoveEntityTowards(goblinEntity, location);
 			} else if (tile.CanSetOnFire()){ // Can we set something on fire?
 				// Set it on fire!
 				if (Random.Range(0F,1F) > GoblinIgniteTilePercent){
@@ -34,6 +34,10 @@ public class GoblinManager : MonoBehaviour {
 				}
 			} else {
 				// Move randomly looking for mischief
+				var legalMoves = EntityManager.getLegalMoves(location);
+				float countOfLegalMoves = (float) legalMoves.Count;
+				int randomMove = Mathf.FloorToInt(Random.Range(0F, countOfLegalMoves));
+				EntityManager.MoveEntityTo(goblinEntity, legalMoves[randomMove]);
 			}
 		}
 	}

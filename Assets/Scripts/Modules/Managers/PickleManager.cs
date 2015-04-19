@@ -7,10 +7,16 @@ using System.Collections;
 public class PickleManager : MonoBehaviour {
 	public EntityManager EntityManager;
 
-	public bool IsPicklePresent(Vector2 location) {
-		return EntityManager.GetPickles ().Any (p => p.GetLocation () == location);
+	public void EatPickleAtLocation(Vector2 location){
+
+		PickleEntity pickle = (PickleEntity)GetClosestPickleInRange (location, 0);
+		EntityManager.DestroyEntity (pickle);
 	}
 
+	public bool IsPicklePresent(Vector2 location) {
+
+		return EntityManager.GetPickles ().Any (p => p.GetLocation () == location);
+	}
 
 	public bool IsPickleInRange(Vector2 location, int distance = 5){
 

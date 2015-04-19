@@ -15,8 +15,38 @@ public class EntityManager : BaseMonoBehaviour {
 	private readonly IList<EntityBase> _pickles = new List<EntityBase>();
 	private readonly IList<EntityBase> _firemen = new List<EntityBase>();
 
+	private int _mapMax = 10;
+
+	public List<Vector2> getLegalMoves(Vector2 currentPosition){
+
+		List<Vector2> legalMoves = new List<Vector2> ();
+
+		if (currentPosition.x != 1){
+			legalMoves.Add (new Vector2 (currentPosition.x-1, currentPosition.y));
+		}
+		if (currentPosition.x != _mapMax){
+			legalMoves.Add (new Vector2 (currentPosition.x+1, currentPosition.y));
+		}
+		if (currentPosition.y != 1){
+			legalMoves.Add (new Vector2 (currentPosition.x, currentPosition.y-1));
+		}
+		if (currentPosition.y != _mapMax){
+			legalMoves.Add (new Vector2 (currentPosition.x, currentPosition.y+1));
+		}
+
+		return legalMoves;
+	}
+
+	public void MoveEntityTowards(EntityBase entity, Vector2 desiredPosition, int speed = 1) {
+
+		// TODO: Make speed actually matter 
+		entity.SetLocation (desiredPosition);
+	}
+
+
 	public void MoveEntityTo(EntityBase entity, Vector2 newPosition) {
 
+		entity.SetLocation (newPosition);
 	}
 
 	public EntityBase CreateGoblin(Vector2 position) {
@@ -75,7 +105,7 @@ public class EntityManager : BaseMonoBehaviour {
 		return _watchmen.ToArray ();
 	}
 
-	void DestroyEntity(EntityBase entity) {
+	public void DestroyEntity(EntityBase entity) {
 
 	}
 }
