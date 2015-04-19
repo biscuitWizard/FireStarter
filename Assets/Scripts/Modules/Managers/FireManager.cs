@@ -33,8 +33,7 @@ public class FireManager : BaseMonoBehaviour {
 			var randomY = Random.Range (0, (int)Map.MapSize.y);
 
 			var tile = Map.GetTile (randomX, randomY);
-			if(tile.IsFlammable
-			   	&& tile.HasBuilding) {
+			if(tile.GetFireSeverity() == FireStage.Flammable) {
 				StartFire(new Vector2(randomX, randomY), FireStage.Kindling);
 
 				//Messenger<Vector2, float>.Broadcast ("cameraPanToAndWait", new Vector2(randomX, randomY), 3f);

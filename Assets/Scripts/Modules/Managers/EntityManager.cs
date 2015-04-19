@@ -22,16 +22,16 @@ public class EntityManager : BaseMonoBehaviour {
 
 		List<Vector2> legalMoves = new List<Vector2> ();
 
-		if (currentPosition.x != 1){
+		if (currentPosition.x != 0){
 			legalMoves.Add (new Vector2 (currentPosition.x-1, currentPosition.y));
 		}
-		if (currentPosition.x != _mapMax){
+		if (currentPosition.x != _mapMax-1){
 			legalMoves.Add (new Vector2 (currentPosition.x+1, currentPosition.y));
 		}
-		if (currentPosition.y != 1){
+		if (currentPosition.y != 0){
 			legalMoves.Add (new Vector2 (currentPosition.x, currentPosition.y-1));
 		}
-		if (currentPosition.y != _mapMax){
+		if (currentPosition.y != _mapMax-1){
 			legalMoves.Add (new Vector2 (currentPosition.x, currentPosition.y+1));
 		}
 
