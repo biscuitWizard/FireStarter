@@ -79,7 +79,5 @@ public class MapModule : BaseMonoBehaviour {
 				_mapTiles[x, y] = tile;
 			}
 		}
-
-		Messenger<Vector2>.Broadcast ("mapInitialized", MapSize);
 	}
 }
