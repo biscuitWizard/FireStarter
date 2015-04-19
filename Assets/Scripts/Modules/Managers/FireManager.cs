@@ -17,23 +17,38 @@ public class FireManager : BaseMonoBehaviour {
 	private float _lastCheck;
 	private readonly List<Tile> _fires = new List<Tile>();
 
+	void Awake() {
+		_lastCheck = Time.realtimeSinceStartup;
+	}
 
 	// Update is called once per frame
 	public override void GameUpdate () {
-		if ((_lastCheck - Time.realtimeSinceStartup) >= FireSpreadSecondsInterval) {
+		if (Time.realtimeSinceStartup - _lastCheck > FireSpreadSecondsInterval) {
+			Debug.Log ("Checking Fires... " + _fires.Count);
+			var firesToCheck = _fires.OrderBy (f => System.Guid.NewGuid()).Take (FiresToCheckSpreadPerTick);
+			foreach(var fire in firesToCheck) {
+				var roll = Random.Range (0f, 1f);
+				Debug.Log ("Roll: " + roll);
+				if(roll < NearbyTileFlammabilityPercent) { 
+					Debug.Log ("Spreading fire!");
 
+					StartFire (fire.Position + Direction.Down.ToVector2(), FireStage.Kindling);
+				}
+			}
 
 			_lastCheck = Time.realtimeSinceStartup;
 		}
 	}
 
 	public void GenerateFires() {
+		Debug.Log ("Generating!...");
 		while (_fires.Count < 2) {
-			var randomX = Random.Range (0, (int)Map.MapSize.x);
-			var randomY = Random.Range (0, (int)Map.MapSize.y);
+			var randomX = Random.Range (0, (int)Map.MapSize.x - 1);
+			var randomY = Random.Range (0, (int)Map.MapSize.y - 1);
 
 			var tile = Map.GetTile (randomX, randomY);
 			if(tile.GetFireSeverity() == FireStage.Flammable) {
+				Debug.Log ("Starting fire...!");
 				StartFire(new Vector2(randomX, randomY), FireStage.Kindling);
 
 				//Messenger<Vector2, float>.Broadcast ("cameraPanToAndWait", new Vector2(randomX, randomY), 3f);
