@@ -43,16 +43,16 @@ public class WatchmanManager : BaseMonoBehaviour {
 			Vector2 spawnLocation = Vector2.zero;
 			switch (boardEdge) {
 			case 1:
-				spawnLocation = new Vector2(1, Random.Range(1, _mapMax+1));
+				spawnLocation = new Vector2(0, Random.Range(0, _mapMax));
 				break;
 			case 2:
-				spawnLocation = new Vector2(_mapMax, Random.Range(1, _mapMax+1));
+				spawnLocation = new Vector2(_mapMax-1, Random.Range(0, _mapMax));
 				break;
 			case 3:
-				spawnLocation = new Vector2(Random.Range(1, _mapMax+1), 1);
+				spawnLocation = new Vector2(Random.Range(0, _mapMax), 0);
 				break;
 			case 4:
-				spawnLocation = new Vector2(Random.Range(1, _mapMax+1), _mapMax);
+				spawnLocation = new Vector2(Random.Range(0, _mapMax), _mapMax-1);
 				break;
 			}
 			EntityManager.CreateWatchman(spawnLocation);
