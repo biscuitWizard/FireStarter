@@ -2,19 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GoblinManager : MonoBehaviour {
-	
-	public GameObject Goblinprefab;
-	public float GoblinIgniteTilePercent = .5f;
+public class GoblinManager : BaseMonoBehaviour {
+
 	public EntityManager EntityManager;
 	public PickleManager PickleManager;
+
+	public GameObject Goblinprefab;
+	public float GoblinIgniteTilePercent = .5f;
 
 	// Use this for initialization
 	void Start () {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public override void GameUpdate () {
 		
 		// loop through every goblin
 		foreach (GoblinEntity goblinEntity in EntityManager.GetGoblins()) {
