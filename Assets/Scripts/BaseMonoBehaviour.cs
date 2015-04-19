@@ -4,7 +4,7 @@ using System.Collections;
 public class BaseMonoBehaviour : MonoBehaviour {
 	const float AITickInterval = 2;
 	private static bool Paused;
-	private bool _waiting;
+	private Coroutine AICoroutine;
 
 	// Update is called once per frame
 	void Update () {
@@ -12,9 +12,8 @@ public class BaseMonoBehaviour : MonoBehaviour {
 			return;
 		}
 
-		if (!_waiting) {
-			_waiting = true;
-			StartCoroutine (AIUpdateRoutine ());
+		if (AICoroutine == null) {
+			AICoroutine = StartCoroutine (AIUpdateRoutine ());
 		}
 		//if ((_lastAITick - Time.realtimeSinceStartup) >= AITickInterval) {
 		//	_lastAITick = Time.realtimeSinceStartup;
@@ -36,11 +35,15 @@ public class BaseMonoBehaviour : MonoBehaviour {
 
 		AIUpdate ();
 
-		_waiting = false;
+		AICoroutine = null;
 	}
 
 	protected void Pause() {
 		Paused = true;
+
+		if (AICoroutine != null) {
+			StopCoroutine(AICoroutine);
+		}
 	}
 
 	protected void Unpause() {

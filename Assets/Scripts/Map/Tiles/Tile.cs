@@ -59,6 +59,10 @@ public class Tile : BaseMonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		Debug.Log (string.Format ("Tile {0},{1} clicked!", Position.x, Position.y));
+		Messenger<Vector2>.Broadcast<EntityBase> ("placePickle", Position, OnCreatePickle);
+	}
+
+	void OnCreatePickle(EntityBase pickle) {
+
 	}
 }

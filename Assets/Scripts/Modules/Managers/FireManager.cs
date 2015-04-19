@@ -24,14 +24,10 @@ public class FireManager : BaseMonoBehaviour {
 	// Update is called once per frame
 	public override void GameUpdate () {
 		if (Time.realtimeSinceStartup - _lastCheck > FireSpreadSecondsInterval) {
-			Debug.Log ("Checking Fires... " + _fires.Count);
 			var firesToCheck = _fires.OrderBy (f => System.Guid.NewGuid()).Take (FiresToCheckSpreadPerTick);
 			foreach(var fire in firesToCheck) {
 				var roll = Random.Range (0f, 1f);
-				Debug.Log ("Roll: " + roll);
 				if(roll < NearbyTileFlammabilityPercent) { 
-					Debug.Log ("Spreading fire! " + fire.Position);
-
 					StartFire (fire.Position + Direction.Down.ToVector2(), FireStage.Kindling);
 				}
 			}
@@ -41,14 +37,12 @@ public class FireManager : BaseMonoBehaviour {
 	}
 
 	public void GenerateFires() {
-		Debug.Log ("Generating!...");
 		while (_fires.Count < 2) {
 			var randomX = Random.Range (0, (int)Map.MapSize.x - 1);
 			var randomY = Random.Range (0, (int)Map.MapSize.y - 1);
 
 			var tile = Map.GetTile (randomX, randomY);
 			if(tile.GetFireSeverity() == FireStage.Flammable) {
-				Debug.Log ("Starting fire...!");
 				StartFire(new Vector2(randomX, randomY), FireStage.Kindling);
 
 				//Messenger<Vector2, float>.Broadcast ("cameraPanToAndWait", new Vector2(randomX, randomY), 3f);

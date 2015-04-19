@@ -19,13 +19,13 @@ public class CameraController : BaseMonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	public override void GameUpdate () {
 		float horizontalMovement;
 		float verticalMovement;
 
 		// Do mouse input or use joystick
 		// not both
-		if (Input.GetMouseButton (0)) {
+		if (Input.GetMouseButton (2)) {
 			horizontalMovement = Input.GetAxis ("Mouse X") * -1;
 			verticalMovement = Input.GetAxis ("Mouse Y") * -1;
 		} else {

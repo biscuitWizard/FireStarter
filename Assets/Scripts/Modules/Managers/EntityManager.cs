@@ -18,6 +18,13 @@ public class EntityManager : BaseMonoBehaviour {
 	private readonly IList<EntityBase> _pickles = new List<EntityBase>();
 	private readonly IList<EntityBase> _firemen = new List<EntityBase>();
 
+	void Awake() {
+		Messenger<Vector2>.AddListener<EntityBase> ("placePickle", CreatePickle);
+		Messenger<Vector2>.AddListener<EntityBase> ("placeGoblin", CreateGoblin);
+		Messenger<Vector2>.AddListener<EntityBase> ("placeFireman", CreateFireman);
+		Messenger<Vector2>.AddListener<EntityBase> ("placeWatchman", CreateWatchman);
+	}
+
 	public List<Vector2> getLegalMoves(Vector2 currentPosition){
 
 		List<Vector2> legalMoves = new List<Vector2> ();
@@ -136,6 +143,6 @@ public class EntityManager : BaseMonoBehaviour {
 	}
 
 	public void DestroyEntity(EntityBase entity) {
-
+		DestroyImmediate (entity);
 	}
 }
