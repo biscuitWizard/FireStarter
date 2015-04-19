@@ -2,20 +2,15 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(GameModule))]
 public class FiremanManager : BaseMonoBehaviour {
 
 	public EntityManager EntityManager;
+	public GameModule Game;
 	
 	private float _lastSpawnTime = 0;
 	private int _firemenSpawnSecondsInterval = 3;
-	
-	// TODO: change this to the correct value
-	private int _mapMax = 10;
 
-	// Use this for initialization
-	void Start () {
-	}
-	
 	// Update is called once per frame
 	public override void GameUpdate () {
 
@@ -44,23 +39,24 @@ public class FiremanManager : BaseMonoBehaviour {
 	void SpawnFiremen () {
 		
 		if ((_lastSpawnTime - Time.realtimeSinceStartup) >= _firemenSpawnSecondsInterval) {
-			
+			var mapSize = Game.GetMapSize();
+
 			// TODO: is map 0-based or 1-based?
 			// Determine board edge
 			int boardEdge = Random.Range(1,5);
 			Vector2 spawnLocation = Vector2.zero;
 			switch (boardEdge) {
 			case 1:
-				spawnLocation = new Vector2(1, Random.Range(1, _mapMax+1));
+				spawnLocation = new Vector2(1, Random.Range(1, mapSize.y + 1));
 				break;
 			case 2:
-				spawnLocation = new Vector2(_mapMax, Random.Range(1, _mapMax+1));
+				spawnLocation = new Vector2(mapSize.x, Random.Range(1, mapSize.y + 1));
 				break;
 			case 3:
-				spawnLocation = new Vector2(Random.Range(1, _mapMax+1), 1);
+				spawnLocation = new Vector2(Random.Range(1, mapSize.x + 1), 1);
 				break;
 			case 4:
-				spawnLocation = new Vector2(Random.Range(1, _mapMax+1), _mapMax);
+				spawnLocation = new Vector2(Random.Range(1, mapSize.x + 1), mapSize.y);
 				break;
 			}
 			EntityManager.CreateWatchman(spawnLocation);

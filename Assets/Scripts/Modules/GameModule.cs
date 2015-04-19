@@ -28,4 +28,8 @@ public class GameModule : BaseMonoBehaviour {
 		//Firemen.GenerateFiremen();
 		Messenger.Broadcast ("newGameStarted");
 	}
+
+	public Vector2 GetMapSize() {
+		return Map.MapSize;
+	}
 }
