@@ -48,7 +48,7 @@ public class FiremanManager : BaseMonoBehaviour {
 			// TODO: is map 0-based or 1-based?
 			// Determine board edge
 			int boardEdge = Random.Range(1,5);
-			Vector2 spawnLocation;
+			Vector2 spawnLocation = Vector2.zero;
 			switch (boardEdge) {
 			case 1:
 				spawnLocation = new Vector2(1, Random.Range(1, _mapMax+1));
