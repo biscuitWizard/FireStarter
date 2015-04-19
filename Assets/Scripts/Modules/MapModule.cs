@@ -46,6 +46,10 @@ public class MapModule : BaseMonoBehaviour {
 		_mapTiles = null;
 	}
 
+	public Tile GetTile(int x, int y) {
+		return _mapTiles [x, y];
+	}
+
 	public void GenerateMap() {
 		if (_mapTiles != null && _mapTiles.Length > 0)
 			ClearMap ();

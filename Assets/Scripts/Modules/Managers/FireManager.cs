@@ -7,21 +7,17 @@ using System.Linq;
 public class FireManager : BaseMonoBehaviour {
 
 	public GameObject StarterFirePrefab;
+	public WeatherManager WeatherManager;
+	public MapModule Map;
 	public float NearbyTileFlammabilityPercent = .2f;
 	public int FireSpreadSecondsInterval = 3;
 	public int FiresToCheckSpreadPerTick = 2;
 	public int StartingFires = 2;
-	private WeatherManager _weather;
-	private Vector2 _mapSize;
-	private float _lastCheck;
-	//private readonly List<Fire> _activeFires = new List<Fire>();
-
-	// Use this for initialization
-	void Awake () {
-		Messenger<Vector2>.AddListener ("mapInitialized", OnMapInitialized);
-		_weather = GetComponent<WeatherManager> ();
-	}
 	
+	private float _lastCheck;
+	private readonly List<Tile> _fires = new List<Tile>();
+
+
 	// Update is called once per frame
 	public override void GameUpdate () {
 		if ((_lastCheck - Time.realtimeSinceStartup) >= FireSpreadSecondsInterval) {
@@ -31,14 +27,18 @@ public class FireManager : BaseMonoBehaviour {
 		}
 	}
 
-	public void GenerateFire() {
-		for(var i=0;i < StartingFires;i++) {
-			var randomX = Random.Range (0, (int)_mapSize.x);
-			var randomY = Random.Range (0, (int)_mapSize.y);
-			//var fire = Instantiate (StarterFirePrefab).GetComponent<Fire>();
+	public void GenerateFires() {
+		while (_fires.Count < 2) {
+			var randomX = Random.Range (0, (int)Map.MapSize.x);
+			var randomY = Random.Range (0, (int)Map.MapSize.y);
 
-			//_activeFires.Add (fire);
-			Messenger<Vector2, float>.Broadcast ("cameraPanToAndWait", new Vector2(randomX, randomY), 3f);
+			var tile = Map.GetTile (randomX, randomY);
+			if(tile.IsFlammable
+			   	&& tile.HasBuilding) {
+				StartFire(new Vector2(randomX, randomY), FireStage.Kindling);
+
+				//Messenger<Vector2, float>.Broadcast ("cameraPanToAndWait", new Vector2(randomX, randomY), 3f);
+			}
 		}
 	}
 
@@ -48,7 +48,13 @@ public class FireManager : BaseMonoBehaviour {
 		//Messenger<Vector2, Item>.Broadcast ("removeItemFromMap", location, fire);
 	}
 
-	void OnMapInitialized(Vector2 size) {
-		_mapSize = size;
+	public void StartFire(Vector2 location, FireStage severity) {
+		var tile = Map.GetTile ((int)location.x, (int)location.y);
+		tile.SetFire (severity);
+		_fires.Add (tile);
+	}
+
+	public Tile[] GetBurningTiles() {
+		return _fires.ToArray ();
 	}
 }

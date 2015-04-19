@@ -22,7 +22,7 @@ public class GameModule : BaseMonoBehaviour {
 	public void NewGame() {
 		Map.GenerateMap ();
 		Weather.GenerateWeather ();
-		Fire.GenerateFire ();
+		Fire.GenerateFires ();
 		//Goblin.GenerateGoblins();
 		//Police.GeneratePolice();
 		//Firemen.GenerateFiremen();
