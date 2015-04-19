@@ -26,7 +26,7 @@ public class GameModule : BaseMonoBehaviour {
 		//Goblin.GenerateGoblins();
 		//Police.GeneratePolice();
 		//Firemen.GenerateFiremen();
-		Messenger.Broadcast ("newGameStarted");
+		//Messenger.Broadcast ("newGameStarted");
 	}
 
 	public Vector2 GetMapSize() {
