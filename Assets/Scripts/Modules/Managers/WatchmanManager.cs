@@ -22,6 +22,7 @@ public class WatchmanManager : BaseMonoBehaviour {
 		// loop through every watchmen
 		foreach (WatchmanEntity watchmanEntity in EntityManager.GetWatchmen()) {
 
+			// TODO: make watchmen move towards goblins
 			var legalMoves = EntityManager.getLegalMoves(watchmanEntity.GetLocation());
 			float countOfLegalMoves = (float) legalMoves.Count;
 			int randomMove = Mathf.FloorToInt(Random.Range(0F, countOfLegalMoves));

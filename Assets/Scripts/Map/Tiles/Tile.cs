@@ -35,4 +35,12 @@ public class Tile : MonoBehaviour {
 			return false;
 		}
 	}
+
+	public bool IsOnFire(){
+		if (this._fireSeverity == FireStage.Kindling || this._fireSeverity == FireStage.Hazard || this._fireSeverity == FireStage.Raging){
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
