@@ -15,6 +15,7 @@ public class EntityManager : BaseMonoBehaviour {
 	private readonly IList<EntityBase> _pickles = new List<EntityBase>();
 	private readonly IList<EntityBase> _firemen = new List<EntityBase>();
 
+	// TODO: change this to the correct value
 	private int _mapMax = 10;
 
 	public List<Vector2> getLegalMoves(Vector2 currentPosition){

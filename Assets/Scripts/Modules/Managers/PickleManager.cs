@@ -29,6 +29,7 @@ public class PickleManager : MonoBehaviour {
 
 	public EntityBase GetClosestPickleInRange(Vector2 location, int distance = 5) {
 
+		// TODO: make range actually matter
 		var picklesInRange = EntityManager.GetPickles ().Select (p => {
 			var pickleLocation = p.GetLocation();
 			var xd = pickleLocation.x - location.x;
