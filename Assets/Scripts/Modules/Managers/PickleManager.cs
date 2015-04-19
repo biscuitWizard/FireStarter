@@ -5,7 +5,28 @@ using System.Collections;
 
 [RequireComponent(typeof(EntityManager))]
 public class PickleManager : MonoBehaviour {
+
 	public EntityManager EntityManager;
+
+	private int _pickleCount = 1;
+
+	public void PlacePickle(Vector2 location){
+	
+		if (_pickleCount == 0) {
+			return;
+		}
+
+		if (!IsPicklePresent(location)){
+
+			EntityManager.CreatePickle(location);
+			_pickleCount --;
+		}
+	}
+
+	public void AddPickle(){
+	
+		_pickleCount++;
+	}
 
 	public void EatPickleAtLocation(Vector2 location){
 
