@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(EntityManager))]
 public class GoblinManager : BaseMonoBehaviour {
 
 	public EntityManager EntityManager;
