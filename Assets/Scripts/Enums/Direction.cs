@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public enum Direction {
-	None,
-	Up,
-	Down,
-	Left,
-	Right,
-	UpperLeft,
-	UpperRight,
-	LowerLeft,
-	LowerRight
+public enum Direction : int {
+	None = 0,
+	Up = 1,
+	Down = 5,
+	Left = 7,
+	Right = 3,
+	UpperLeft = 8,
+	UpperRight = 2,
+	LowerLeft = 6,
+	LowerRight = 4
 }
 
 public static class DirectionExtensions {
