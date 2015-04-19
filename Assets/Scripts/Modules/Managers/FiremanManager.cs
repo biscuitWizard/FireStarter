@@ -41,7 +41,6 @@ public class FiremanManager : BaseMonoBehaviour {
 		if ((_lastSpawnTime - Time.realtimeSinceStartup) >= _firemenSpawnSecondsInterval) {
 			var mapSize = Game.GetMapSize();
 
-			// TODO: is map 0-based or 1-based?
 			// Determine board edge
 			int boardEdge = Random.Range(1,5);
 			Vector2 spawnLocation = Vector2.zero;

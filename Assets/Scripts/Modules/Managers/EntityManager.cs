@@ -40,10 +40,34 @@ public class EntityManager : BaseMonoBehaviour {
 
 	public void MoveEntityTowards(EntityBase entity, Vector2 desiredPosition, int speed = 1) {
 
-		// TODO: Make speed actually matter 
-		entity.SetLocation (desiredPosition);
-	}
+		// do each move individually
+		for (int moveNumber = 0; moveNumber < speed; moveNumber++) {
 
+			List<Vector2> legalMoves = getLegalMoves (entity.GetLocation ());
+			Dictionary<double, Vector2> weightedMoves = new Dictionary<double, Vector2>();
+
+			// iterate through the potential moves and assign weights to them based on how close they are towards the destination
+			foreach (Vector2 legalPosition in legalMoves){
+				float distance = Vector3.Distance(legalPosition, desiredPosition);
+				weightedMoves.Add(distance, legalPosition);
+			}
+			var distances = weightedMoves.Keys;
+
+			// find the most-effective route
+			double currentDistance = distances.ElementAt(0);
+			Vector2 currentLocation = weightedMoves[currentDistance];
+			foreach (double distance in distances){
+				if (distance < currentDistance){
+					currentDistance = distance;
+					currentLocation = weightedMoves[distance];
+				}
+			}
+
+			// move to the most-effective location
+			entity.SetLocation (currentLocation);
+		}
+
+	}
 
 	public void MoveEntityTo(EntityBase entity, Vector2 newPosition) {
 
