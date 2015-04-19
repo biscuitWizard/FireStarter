@@ -71,6 +71,7 @@ public class MapModule : BaseMonoBehaviour {
 				var tilePrefab = CityGenerator.GetTile (x, y);
 				// Create the tile from prefrab.
 				var tile = CreateTile (tileX, tileY, tilePrefab);
+				tile.Position = new Vector2(x, y);
 				// Name the tile.
 				tile.name = string.Format ("Tile ({0},{1})", x, y);
 				// Set the sorting order for correct depth buffer.

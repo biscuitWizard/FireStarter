@@ -7,11 +7,6 @@ public class EntityBase : BaseMonoBehaviour {
 		return transform.parent.GetComponent<Tile> ().Position;
 	}
 
-	public void SetLocation(Vector2 newLocation) {
-
-		//TODO: set location here
-	}
-
 	public Tile GetTile(){
 		return transform.parent.GetComponent<Tile> ();
 	}

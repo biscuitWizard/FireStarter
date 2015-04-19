@@ -5,6 +5,8 @@ using System.Linq;
 
 [RequireComponent(typeof(GameModule))]
 public class EntityManager : BaseMonoBehaviour {
+	public MapModule Map;
+
 	public GameObject GoblinPrefab;
 	public GameObject WatchmanPrefab;
 	public GameObject PicklePrefab;
@@ -64,14 +66,18 @@ public class EntityManager : BaseMonoBehaviour {
 			}
 
 			// move to the most-effective location
-			entity.SetLocation (currentLocation);
+			//entity.SetLocation (currentLocation);
+			MoveEntityTo (entity, currentLocation);
 		}
 
 	}
 
 	public void MoveEntityTo(EntityBase entity, Vector2 newPosition) {
+		var tile = Map.GetTile ((int)newPosition.x, (int)newPosition.y);
+		entity.transform.SetParent (tile.transform);
+		entity.transform.localPosition = Vector2.zero;
 
-		entity.SetLocation (newPosition);
+		//entity.SetLocation (newPosition);
 	}
 
 	public EntityBase CreateGoblin(Vector2 position) {

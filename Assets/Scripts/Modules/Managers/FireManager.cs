@@ -30,7 +30,7 @@ public class FireManager : BaseMonoBehaviour {
 				var roll = Random.Range (0f, 1f);
 				Debug.Log ("Roll: " + roll);
 				if(roll < NearbyTileFlammabilityPercent) { 
-					Debug.Log ("Spreading fire!");
+					Debug.Log ("Spreading fire! " + fire.Position);
 
 					StartFire (fire.Position + Direction.Down.ToVector2(), FireStage.Kindling);
 				}

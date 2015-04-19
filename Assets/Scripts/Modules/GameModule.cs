@@ -7,7 +7,7 @@ public class GameModule : BaseMonoBehaviour {
 	public bool StartGameOnLoad = false;
 	public FireManager Fire;
 	public WeatherManager Weather;
-	//public GoblinManager Goblin;
+	public GoblinManager Goblin;
 	//public PoliceManager Police;
 	//public FiremenManager Firemen;
 
@@ -23,7 +23,7 @@ public class GameModule : BaseMonoBehaviour {
 		Map.GenerateMap ();
 		Weather.GenerateWeather ();
 		Fire.GenerateFires ();
-		//Goblin.GenerateGoblins();
+		Goblin.GenerateGoblins();
 		//Police.GeneratePolice();
 		//Firemen.GenerateFiremen();
 		//Messenger.Broadcast ("newGameStarted");

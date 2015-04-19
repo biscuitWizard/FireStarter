@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(TileRenderer))]
-public class Tile : MonoBehaviour {
+public class Tile : BaseMonoBehaviour {
 	public SpriteRenderer spriteRenderer;
 	public TileRenderer tileRenderer;
-	public Vector2 Position { get; private set; }
+	public Vector2 Position { get; set; }
 	public bool HasBuilding = true;
 	public FireStage StartingFireStage = FireStage.Flammable;
 	private FireStage _fireSeverity;
