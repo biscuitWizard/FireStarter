@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class FiremanManager : BaseMonoBehaviour {
 
 	public EntityManager EntityManager;
+	public FireManager FireManager;
 	public GameModule Game;
 	
 	private float _lastSpawnTime = 0;
@@ -24,11 +25,8 @@ public class FiremanManager : BaseMonoBehaviour {
 				tile.SetFire(FireStage.Flammable);
 			} else { // find a fire
 
-				// TODO: make firemen move towards fire
-				var legalMoves = EntityManager.getLegalMoves(firemanEntity.GetLocation());
-				float countOfLegalMoves = (float) legalMoves.Count;
-				int randomMove = Mathf.FloorToInt(Random.Range(0F, countOfLegalMoves));
-				EntityManager.MoveEntityTo(firemanEntity, legalMoves[randomMove]);
+				// move towards fire
+				EntityManager.MoveEntityTowards(firemanEntity, FireManager.GetClosestBurningTile(firemanEntity.GetLocation()));
 			}
 		}
 

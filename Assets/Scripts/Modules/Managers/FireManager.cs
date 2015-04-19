@@ -56,4 +56,29 @@ public class FireManager : BaseMonoBehaviour {
 	public Tile[] GetBurningTiles() {
 		return _fires.ToArray ();
 	}
+
+	public Vector2 GetClosestBurningTile(Vector2 location){
+
+		var fires = GetBurningTiles ().Select (f => {
+			var fireLocation = f.Position;
+			var xd = fireLocation.x - location.x;
+			var yd = fireLocation.y - location.y;
+
+			return new FireDistance(f, Mathf.Sqrt(Mathf.Pow (xd, 2) + Mathf.Pow (yd,2)));
+		})
+				.OrderBy (fd => fd.Distance);
+
+		return fires.First().Tile.Position;
+	}
+	
+	private class FireDistance {
+		public Tile Tile;
+		public float Distance;
+		
+		public FireDistance(Tile tile, float distance) {
+			Tile = tile;
+			Distance = distance;
+		}
+	}
+
 }
