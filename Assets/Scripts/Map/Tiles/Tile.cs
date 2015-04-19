@@ -57,4 +57,8 @@ public class Tile : BaseMonoBehaviour {
 			return false;
 		}
 	}
+
+	void OnMouseDown() {
+		Debug.Log (string.Format ("Tile {0},{1} clicked!", Position.x, Position.y));
+	}
 }
