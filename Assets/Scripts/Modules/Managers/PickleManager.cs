@@ -38,7 +38,7 @@ public class PickleManager : MonoBehaviour {
 			.Where (pd => pd.Distance <= distance)
 			.OrderBy (pd => pd.Distance);
 
-		return picklesInRange.First ().Pickle;
+		return picklesInRange.First().Pickle;
 	}
 
 	private class PickleDistance {
