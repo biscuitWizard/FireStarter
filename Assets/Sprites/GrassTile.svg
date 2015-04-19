@@ -13,9 +13,9 @@
    height="1052.36"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.48.5 r10040"
    sodipodi:docname="GrassTile.svg"
-   inkscape:export-filename="D:\Dev\Unity3D\FireStarter\Assets\Sprites\TileTemplate.png"
+   inkscape:export-filename="D:\Dev\Unity3D\FireStarter\Assets\Sprites\GrassTile.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -34,8 +34,8 @@
      inkscape:current-layer="layer1"
      showgrid="true"
      showguides="true"
-     inkscape:window-width="1280"
-     inkscape:window-height="738"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1">
