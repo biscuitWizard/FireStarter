@@ -16,9 +16,7 @@ public class MapModule : BaseMonoBehaviour {
 	void Awake() {
 		// Create the root
 		_root = new GameObject ("Map Root");
-	}
 
-	void Start () {
 		if (GenerateOnStart)
 			GenerateMap ();
 	}
