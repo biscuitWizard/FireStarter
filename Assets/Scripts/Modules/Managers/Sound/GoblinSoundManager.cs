@@ -8,37 +8,22 @@ public class GoblinSoundManager : SoundMonoBehaviour {
 	public FMODAsset GoblinLyrics;
 	public FMODAsset GoblinDeath;
 
-	EventInstance _goblinLaugh;
-	EventInstance _goblinLyrics;
-	EventInstance _goblinDeath;
-
 	// Use this for initialization
 	void Start () {
 		Messenger.AddListener ("playRandomGoblinLyric", OnPlayRandomGoblinLyric);
 		Messenger.AddListener ("playGoblinDeath", OnPlayGoblinDeath);
 		Messenger.AddListener ("playRandomGoblinLaugh", OnPlayRandomGoblinLaugh);
-		_goblinLaugh = StudioSystem.GetEvent (GoblinLaugh.path);
-		_goblinDeath = StudioSystem.GetEvent (GoblinDeath.path);
-		_goblinLyrics = StudioSystem.GetEvent (GoblinLyrics.path);
 	}
 
 	void OnPlayRandomGoblinLyric() {
-		if (IsSoundPlaying (_goblinLyrics)) {
-			return;
-		}
-
-		_goblinLyrics.start ();
+		StudioSystem.PlayOneShot (GoblinLyrics, Camera.main.transform.position);
 	}
 
 	void OnPlayGoblinDeath() {
-		_goblinDeath.start ();
+		StudioSystem.PlayOneShot (GoblinDeath, Camera.main.transform.position);
 	}
 
 	void OnPlayRandomGoblinLaugh() {
-		if (IsSoundPlaying (_goblinLaugh)) {
-			return;
-		}
-		
-		_goblinLaugh.start ();
+		StudioSystem.PlayOneShot (GoblinLaugh, Camera.main.transform.position);
 	}
 }
