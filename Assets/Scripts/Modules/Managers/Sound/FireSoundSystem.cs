@@ -45,7 +45,9 @@ public class FireSoundSystem : SoundMonoBehaviour {
 	}
 
 	void OnPlayFireLoop(Vector2 tile, float intensity) {
-		_fireLoopIntensities.Add (tile, intensity);
+		if (!_fireLoopIntensities.ContainsKey (tile)) {
+			_fireLoopIntensities.Add (tile, intensity);
+		}
 
 		if (IsSoundPlaying (_fireLoop)) {
 			return;

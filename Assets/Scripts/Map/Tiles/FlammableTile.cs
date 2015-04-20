@@ -10,9 +10,9 @@ public class FlammableTile : BaseMonoBehaviour {
 
 	public float MinStageLifetime = 8f;
 	public float MaxStageLifetime = 14f;
-
+#if UNITY_EDITOR
 	[ReadOnly] public float RemainingStageTime = 0; // This is for debug only.
-
+#endif
 	private FireStage _currentStage;
 	private float[] _stageLifetimes;
 	private TileRenderer _tileRenderer;
@@ -37,8 +37,9 @@ public class FlammableTile : BaseMonoBehaviour {
 		}
 
 		// Debug Only
+#if UNITY_EDITOR
 		RemainingStageTime = (_lastStageChange + _stageLifetimes [(int)_currentStage - 1]) - Time.realtimeSinceStartup;
-
+#endif
 		if(Time.realtimeSinceStartup - _lastStageChange >= _stageLifetimes[(int)_currentStage - 1]) {
 
 			// On next stage
@@ -56,6 +57,7 @@ public class FlammableTile : BaseMonoBehaviour {
 				// Stop the sound.
 				Messenger<Vector2>.Broadcast ("stopFireLoop", _tileRenderer.Tile.Position);
 				Messenger.Broadcast ("playBuildingDestruction");
+				Messenger<Vector2>.Broadcast ("buildingDestroyed", _tileRenderer.Tile.Position);
 			} else { // Render next fire stage.
 				_tileRenderer.RenderFire (FirePrefabs.First (p => p.Stage == _currentStage).Prefab);
 			}

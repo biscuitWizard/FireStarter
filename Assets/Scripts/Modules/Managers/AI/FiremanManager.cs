@@ -30,7 +30,7 @@ public class FiremanManager : BaseMonoBehaviour {
 			}
 		}
 
-		// spawn new watchmen
+		// spawn new fireman
 		SpawnFiremen ();
 	}
 
@@ -59,5 +59,10 @@ public class FiremanManager : BaseMonoBehaviour {
 			EntityManager.CreateWatchman(spawnLocation);
 			_lastSpawnTime = Time.realtimeSinceStartup;
 		}
+	}
+
+	public void GenerateFiremen() {
+		SpawnFiremen ();
+		SpawnFiremen ();
 	}
 }

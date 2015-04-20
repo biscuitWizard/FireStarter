@@ -9,7 +9,7 @@ public class GameModule : BaseMonoBehaviour {
 	public WeatherManager Weather;
 	public GoblinManager Goblin;
 	//public PoliceManager Police;
-	//public FiremenManager Firemen;
+	public FiremanManager Firemen;
 
 	// Use this for initialization
 	void Start () {
@@ -25,7 +25,7 @@ public class GameModule : BaseMonoBehaviour {
 		Fire.GenerateFires ();
 		Goblin.GenerateGoblins();
 		//Police.GeneratePolice();
-		//Firemen.GenerateFiremen();
+		Firemen.GenerateFiremen();
 		//Messenger.Broadcast ("newGameStarted");
 	}
 

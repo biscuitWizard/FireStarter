@@ -11,6 +11,7 @@ public class GoblinManager : BaseMonoBehaviour {
 	public GameModule Game;
 	
 	public float GoblinIgniteTilePercent = .5f;
+	public float GoblinSpeechPercent = 0.60f;
 
 	// Update is called once per frame
 	public override void AIUpdate () {
@@ -28,7 +29,11 @@ public class GoblinManager : BaseMonoBehaviour {
 				EntityManager.MoveEntityTowards(goblinEntity, location);
 			} else if (tile.CanSetOnFire()){ // Can we set something on fire?
 				// Set it on fire!
-				if (Random.Range(0F,1F) > GoblinIgniteTilePercent){
+				if (Random.Range(0F,1F) < GoblinIgniteTilePercent){
+					if(Random.Range (0f, 1f) < GoblinSpeechPercent) {
+						Messenger.Broadcast ("playRandomGoblinLyric");
+					}
+
 					tile.SetFire(FireStage.Kindling);
 				}
 			} else {
