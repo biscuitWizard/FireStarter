@@ -2,19 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(SpriteRenderer), typeof(TileRenderer))]
+[RequireComponent(typeof(SpriteRenderer), typeof(TileRenderer), typeof(FlammableTile))]
 public class Tile : BaseMonoBehaviour {
 	public SpriteRenderer spriteRenderer;
 	public TileRenderer tileRenderer;
 	public Vector2 Position { get; set; }
 	public bool HasBuilding = true;
 	public FireStage StartingFireStage = FireStage.Flammable;
-	private FireStage _fireSeverity;
+
+	private FlammableTile _flammableTile;
 
 	// Use this for initialization
 	void Awake () {
 		spriteRenderer = GetComponent<SpriteRenderer> ();
+		_flammableTile = GetComponent<FlammableTile> ();
+	}
 
+	void Start() {
 		SetFire (StartingFireStage);
 	}
 
@@ -24,26 +28,16 @@ public class Tile : BaseMonoBehaviour {
 	}
 
 	public void SetFire(FireStage severity) {
-		_fireSeverity = severity;
-
-		if (severity == FireStage.Flammable
-			|| severity == FireStage.NotFlammable) {
-
-			// Clear graphics for fire.
-			tileRenderer.ClearFire();
-			return;
-		}
-
-		// Set graphics for fire level.
-		tileRenderer.SetFire (severity);
+		Debug.Log ("Set fire command called");
+		_flammableTile.StartFire (severity);
 	}
 
 	public FireStage GetFireSeverity() {
-		return _fireSeverity;
+		return _flammableTile.GetFireStage();
 	}
 
 	public bool CanSetOnFire(){
-		if (this._fireSeverity == FireStage.Flammable){
+		if (this._flammableTile.GetFireStage() == FireStage.Flammable){
 			return true;
 		} else {
 			return false;
@@ -51,7 +45,9 @@ public class Tile : BaseMonoBehaviour {
 	}
 
 	public bool IsOnFire(){
-		if (this._fireSeverity == FireStage.Kindling || this._fireSeverity == FireStage.Hazard || this._fireSeverity == FireStage.Raging){
+		if (this._flammableTile.GetFireStage() == FireStage.Kindling 
+		    || this._flammableTile.GetFireStage() == FireStage.Hazard 
+		    || this._flammableTile.GetFireStage() == FireStage.Raging){
 			return true;
 		} else {
 			return false;

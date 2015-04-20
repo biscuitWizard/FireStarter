@@ -5,28 +5,20 @@ using System.Collections.Generic;
 
 [RequireComponent(typeof(Tile))]
 public class TileRenderer : BaseMonoBehaviour {
-	public GameObject KindlingFireSprite;
-	public GameObject HazardFireSprite;
-	public GameObject RagingFireSprite;
+	public Tile Tile;
 	private GameObject _currentFireObject;
 
-	public void SetFire(FireStage severity) {
+	void Awake() {
+		Tile = GetComponent<Tile> ();
+	}
+
+	public void RenderFire(GameObject firePrefab) {
 		if (_currentFireObject != null) {
 			ClearFire ();
 		}
 
-		switch (severity) {
-		case FireStage.Kindling:
-			_currentFireObject = Instantiate (KindlingFireSprite);
-			break;
-		case FireStage.Hazard:
-			_currentFireObject = Instantiate (HazardFireSprite);
-			break;
-		case FireStage.Raging:
-			_currentFireObject = Instantiate (RagingFireSprite);
-			break;
-		}
-
+		_currentFireObject = Instantiate (firePrefab);
+		
 		_currentFireObject.transform.SetParent (transform);
 		_currentFireObject.transform.localPosition = Vector2.zero;
 	}

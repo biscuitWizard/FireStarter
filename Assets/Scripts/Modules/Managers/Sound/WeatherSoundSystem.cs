@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WeatherSoundSystem : MonoBehaviour {
+public class WeatherSoundSystem : SoundMonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
