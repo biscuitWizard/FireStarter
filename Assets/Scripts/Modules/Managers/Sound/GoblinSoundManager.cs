@@ -21,11 +21,6 @@ public class GoblinSoundManager : SoundMonoBehaviour {
 		_goblinDeath = StudioSystem.GetEvent (GoblinDeath.path);
 		_goblinLyrics = StudioSystem.GetEvent (GoblinLyrics.path);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	void OnPlayRandomGoblinLyric() {
 		if (IsSoundPlaying (_goblinLyrics)) {
