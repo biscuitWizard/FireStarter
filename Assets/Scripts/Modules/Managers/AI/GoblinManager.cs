@@ -13,6 +13,7 @@ public class GoblinManager : BaseMonoBehaviour {
 	
 	public float GoblinIgniteTilePercent = .5f;
 	public float GoblinSpeechPercent = 0.60f;
+	public float GoblinLaughPercentage = 0.75f;
 
 	private List<Vector2> _currentPath;
 	private Pathfinder _pathfinder;
@@ -50,7 +51,11 @@ public class GoblinManager : BaseMonoBehaviour {
 				// Set it on fire!
 				if (Random.Range(0F,1F) < GoblinIgniteTilePercent){
 					if(Random.Range (0f, 1f) < GoblinSpeechPercent) {
-						Messenger.Broadcast ("playRandomGoblinLyric");
+						if(Random.Range (0f, 1f) < GoblinLaughPercentage) {
+							Messenger.Broadcast ("playRandomGoblinLaugh");
+						} else {
+							Messenger.Broadcast ("playRandomGoblinLyric");
+						}
 					}
 
 					tile.SetFire(FireStage.Kindling);

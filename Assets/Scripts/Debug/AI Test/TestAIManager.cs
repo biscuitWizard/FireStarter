@@ -24,9 +24,9 @@ public class TestAIManager : BaseMonoBehaviour {
 	// Update is called once per frame
 	public override void AIUpdate () {
 		if (_currentPath != null) {
-			// Continue on path.
-			Entity.MoveEntityTo (_testAI, _currentPath [0]);
+			Entity.MoveEntityTo(_testAI, _currentPath[0]);
 			_currentPath.RemoveAt (0);
+
 			if (_currentPath.Count == 0) {
 				_currentPath = null;
 			}
@@ -37,10 +37,6 @@ public class TestAIManager : BaseMonoBehaviour {
 		} else {
 			_currentPath = new List<Vector2> ();
 			_currentPath.AddRange (_pathfinder.Navigate (_testAI.GetTile ().Position, Destination1));
-
-			foreach(var v in _currentPath) {
-				Debug.Log (string.Format ("Pathfinder Results [{1}]: {0}", v, 0));
-			}
 		}
 	}
 }

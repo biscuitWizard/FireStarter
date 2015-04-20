@@ -4,103 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class Pathfinder {
-	private readonly MapModule _map;
-	private readonly EntityManager _entity;
-	private readonly Direction[] _searchableDirections = new Direction[] {
-		Direction.Up,
-		Direction.Left,
-		Direction.Right,
-		Direction.Down
-	};
-	private readonly List<WeightedTile> _openTiles = new List<WeightedTile> ();
-	private readonly List<WeightedTile> _closedTiles = new List<WeightedTile> ();
-
-	public Pathfinder(MapModule map, EntityManager entity) {
-		_map = map;
-		_entity = entity;
-	}
-
-	bool IsTraversable(Vector2 coords) {
-		if (coords.x >= _map.MapSize.x
-		    && coords.x >= _map.MapSize.y
-		    && coords.x < 0
-		    && coords.x < 0) {
-			return false;
-		}
-		return true;
-	}
-
-	public Vector2[] Navigate(Vector2 start, Vector2 destination) {
-		var startTile = CalculateTileWeight (start, destination, null);
-		_closedTiles.Add (startTile);
-
-		// Start algorithm.
-		NavigateRecurse (startTile, destination);
-
-		// We're done! Get the path..
-		var path = FindPath (startTile,
-		                     _closedTiles.First (t => t.Position == destination));
-
-		// Return the path.
-		return path;
-	}
-	/// <summary>
-	/// Navigates the recurse.
-	/// </summary>
-	/// <returns>The depth.</returns>
-	/// <param name="currentTile">Current tile.</param>
-	/// <param name="destination">Destination.</param>
-	void NavigateRecurse(WeightedTile currentTile, Vector2 destination) {
-		var localTiles = new List<WeightedTile> ();
-		foreach (var direction in _searchableDirections.Select (d => d.ToVector2())) {
-			if(IsTraversable(currentTile.Position + direction)) {
-				// Check to see if our tile is already on the open list.
-				if(_openTiles.Any(wt => wt.Position == (currentTile.Position + direction))) {
-					var openTile = _openTiles.First (t => t.Position == (currentTile.Position + direction));
-					localTiles.Add (openTile);
-					// We could recalculate the G value here but I'm lazy...
-				} else { // If not, calculate the weighted value.
-					localTiles.Add (CalculateTileWeight(currentTile.Position + direction, destination, currentTile));
-				}
-			}
-		}
-
-		var quickestTile = localTiles.OrderByDescending (t => t.Weight).First ();
-		localTiles.Remove (quickestTile);
-		_closedTiles.Add (quickestTile);
-		_openTiles.AddRange (localTiles);
-
-		if (quickestTile.Position == destination) {
-			return; // We're done!!
-		} else {
-			// Keep going...
-			NavigateRecurse (quickestTile, destination);
-		}
-	}
-
-	Vector2[] FindPath(WeightedTile origin, WeightedTile destination) {
-		var currentNode = destination;
-		var path = new List<WeightedTile> ();
-
-		while (currentNode != origin) {
-			currentNode = currentNode.Parent;
-			path.Add (currentNode);
-		}
-
-		return path.Select (wt => wt.Position).ToArray();
-	}
-
-	WeightedTile CalculateTileWeight(Vector2 tile, Vector2 destination, WeightedTile parent) {
-		return new WeightedTile () {
-			Position = tile,
-			Parent = parent,
-			MovementCost = 10,
-			Heuristic = Mathf.RoundToInt((Mathf.Abs (destination.x - tile.x) * 10) 
-				+ (Mathf.Abs (destination.y - tile.y) * 10))
-		};
-	}
-
-	private class WeightedTile {
+	class WeightedTile {
 		public WeightedTile Parent;
 		public Vector2 Position;
 		public int MovementCost; // G
@@ -111,6 +15,87 @@ public class Pathfinder {
 			}
 		} 
 	}
+
+	private readonly MapModule _map;
+	private readonly EntityManager _entity;
+	private readonly Direction[] _searchableDirections = new Direction[] {
+		Direction.Up,
+		Direction.Left,
+		Direction.Right,
+		Direction.Down
+	};
+
+	public Pathfinder(MapModule map, EntityManager entity) {
+		_map = map;
+		_entity = entity;
+	}
+	
+	public Vector2[] Navigate(Vector2 start, Vector2 end) {
+		var startTile = new WeightedTile() {
+			Position = start
+		};
+		var closedList = new List<WeightedTile>();
+		var openList = new List<WeightedTile>() {
+			startTile
+		};
+		
+		while(openList.Any()) {
+			var quickestTile = openList.OrderBy(t => t.Weight).First();
+			if(quickestTile.Position == end) { // We're done! Found the path.
+				return FindPath(startTile, quickestTile);
+			}
+			
+			openList.Remove(quickestTile);
+			closedList.Add(quickestTile);
+			foreach(var neighbor in _searchableDirections.Select (d => d.ToVector2())
+			        .Select (d => quickestTile.Position + d)
+			        .Where (d => IsTraversable(d))) {
+				if(closedList.Any(c => c.Position == neighbor)) {
+					continue;
+				}
+				
+				var movementCost = Mathf.RoundToInt(
+					Mathf2.DistanceTo(neighbor, startTile.Position)
+					+ quickestTile.MovementCost);
+				
+				var existingNeighbor = openList.FirstOrDefault(o => o.Position == neighbor);
+				if(existingNeighbor == null) {
+					openList.Add(new WeightedTile() {
+						MovementCost = movementCost,
+						Heuristic = Mathf.RoundToInt(Mathf2.DistanceTo(neighbor, end)),
+						Parent = quickestTile,
+						Position = neighbor
+					});
+				} else if(existingNeighbor.MovementCost > movementCost) {
+					existingNeighbor.MovementCost = movementCost;
+					existingNeighbor.Parent = quickestTile;
+				}				
+			}
+		}
+		
+		return new Vector2[0];
+	}
+	
+	Vector2[] FindPath(WeightedTile start, WeightedTile end) {
+		var currentNode = end;
+		var path = new List<WeightedTile> ();
+		
+		while (currentNode.Position != start.Position) {
+			currentNode = currentNode.Parent;
+			path.Add (currentNode);
+		}
+		
+		return path.Select (wt => wt.Position).Reverse().ToArray();
+	}
+
+	bool IsTraversable(Vector2 coords) {
+		// Check map boundaries...
+		if (coords.x >= _map.MapSize.x
+		    || coords.x >= _map.MapSize.y
+		    || coords.x < 0
+		    || coords.x < 0) {
+			return false;
+		}
+		return true;
+	}
 }
-
-
