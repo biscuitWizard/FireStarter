@@ -26,7 +26,7 @@ public class FiremanManager : BaseMonoBehaviour {
 			} else { // find a fire
 
 				// move towards fire
-				EntityManager.MoveEntityTowards(firemanEntity, FireManager.GetClosestBurningTile(firemanEntity.GetLocation()));
+				//EntityManager.MoveEntityTowards(firemanEntity, FireManager.GetClosestBurningTile(firemanEntity.GetLocation()));
 			}
 		}
 

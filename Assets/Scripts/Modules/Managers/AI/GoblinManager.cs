@@ -8,10 +8,18 @@ public class GoblinManager : BaseMonoBehaviour {
 
 	public EntityManager EntityManager;
 	public PickleManager PickleManager;
+	public MapModule Map;
 	public GameModule Game;
 	
 	public float GoblinIgniteTilePercent = .5f;
 	public float GoblinSpeechPercent = 0.60f;
+
+	private List<Vector2> _currentPath;
+	private Pathfinder _pathfinder;
+
+	void Awake() {
+		_pathfinder = new Pathfinder (Map, EntityManager);
+	}
 
 	// Update is called once per frame
 	public override void AIUpdate () {
@@ -21,12 +29,23 @@ public class GoblinManager : BaseMonoBehaviour {
 			
 			var tile = goblinEntity.GetTile();
 			var location = goblinEntity.GetLocation();
-			if (PickleManager.IsPicklePresent(location)){ // Are we at a pickle?
+			// If we are currently on a path, keep traversing that path.
+			if(_currentPath != null) {
+				EntityManager.MoveEntityTo(goblinEntity, _currentPath[0]);
+				_currentPath.RemoveAt(0);
+
+				// If the path is empty, nuke it.
+				if(_currentPath.Count == 0) {
+					_currentPath = null;
+				}
+			} else if (PickleManager.IsPicklePresent(location)){ // Are we at a pickle?
 				// Eat it!
 				PickleManager.EatPickleAtLocation(location);
 			} else if (PickleManager.IsPickleInRange(location)){ // Is there a pickle in range?
 				// Find it!
-				EntityManager.MoveEntityTowards(goblinEntity, location);
+				_currentPath.AddRange (_pathfinder.Navigate(tile.Position, location));
+				AIUpdate();
+
 			} else if (tile.CanSetOnFire()){ // Can we set something on fire?
 				// Set it on fire!
 				if (Random.Range(0F,1F) < GoblinIgniteTilePercent){

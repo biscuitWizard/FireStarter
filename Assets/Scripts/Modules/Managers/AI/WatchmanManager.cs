@@ -21,7 +21,7 @@ public class WatchmanManager : BaseMonoBehaviour {
 			GoblinManager.GoblinDistance closestGoblinDistance = GoblinManager.GetClosestGoblinDistanceInRange(watchmanEntity.GetLocation());
 			if (Random.Range(0F, 6F) > closestGoblinDistance.Distance){ // guard passes perpection, move towards goblins
 
-				EntityManager.MoveEntityTowards(watchmanEntity, closestGoblinDistance.Goblin.GetLocation(), 2);
+				//EntityManager.MoveEntityTowards(watchmanEntity, closestGoblinDistance.Goblin.GetLocation(), 2);
 			} else { // guard is drunk, move randomly
 
 				var legalMoves = EntityManager.getLegalMoves(watchmanEntity.GetLocation());
