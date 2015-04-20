@@ -10,9 +10,7 @@ public class WatchmanManager : BaseMonoBehaviour {
 	public MapModule Map;
 	public GameModule Game;
 	public int WatchmanSightRange = 7;
-
-	private float _lastSpawnTime = 0;
-	private int _watchmenSpawnSecondsInterval = 3;
+	
 	private Pathfinder _pathfinder;
 	private EntityBase _chasingGoblin;
 	private int _lastMovedOnTick;

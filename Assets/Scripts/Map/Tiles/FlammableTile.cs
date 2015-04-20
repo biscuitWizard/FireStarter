@@ -85,6 +85,7 @@ public class FlammableTile : BaseMonoBehaviour {
 
 	public void StopFire() {
 		_currentStage = _tileRenderer.Tile.StartingFireStage;
+		_tileRenderer.ClearFire ();
 		Messenger<Vector2>.Broadcast ("stopFireLoop", _tileRenderer.Tile.Position);
 		Messenger.Broadcast ("playFireExtinguished");
 	}

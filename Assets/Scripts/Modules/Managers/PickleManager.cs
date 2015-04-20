@@ -43,7 +43,7 @@ public class PickleManager : BaseMonoBehaviour {
 	public void EatPickleAtLocation(Vector2 location){
 
 		PickleEntity pickle = (PickleEntity)GetClosestPickleInRange (location, 0);
-		EntityManager.DestroyEntity (pickle);
+		EntityManager.DestroyPickle (pickle);
 	}
 
 	public bool IsPicklePresent(Vector2 location) {
@@ -62,14 +62,13 @@ public class PickleManager : BaseMonoBehaviour {
 
 	public EntityBase GetClosestPickleInRange(Vector2 location, int distance = 5) {
 		var picklesInRange = EntityManager.GetPickles ().Select (p => {
-			var pickleLocation = p.GetLocation();
+			var pickleLocation = p.GetLocation ();
 			var xd = pickleLocation.x - location.x;
 			var yd = pickleLocation.y - location.y;
 
-			return new PickleDistance(p, Mathf.Sqrt(Mathf.Pow (xd, 2) + Mathf.Pow (yd,2)));
+			return new PickleDistance (p, Mathf.Sqrt (Mathf.Pow (xd, 2) + Mathf.Pow (yd, 2)));
 		})
-			.Where (pd => pd.Distance <= distance)
-			.OrderBy (pd => pd.Distance);
+			.Where (pd => pd.Distance <= distance);
 
 		var pickle = picklesInRange.FirstOrDefault ();
 		return pickle != null

@@ -11,7 +11,8 @@ public class GoblinManager : BaseMonoBehaviour {
 	public FireManager FireManager;
 	public MapModule Map;
 	public GameModule Game;
-	
+
+	public int PickleSightRange = 10;
 	public float GoblinIgniteTilePercent = .5f;
 	public float GoblinSpeechPercent = 0.60f;
 	public float GoblinLaughPercentage = 0.75f;
@@ -31,23 +32,31 @@ public class GoblinManager : BaseMonoBehaviour {
 			
 			var tile = goblinEntity.GetTile();
 			var location = goblinEntity.GetLocation();
+			var pickleLocation = Vector2.zero;
+
 			// If we are currently on a path, keep traversing that path.
 			if(_currentPath != null) {
-				EntityManager.MoveEntityTo(goblinEntity, _currentPath[0]);
-				_currentPath.RemoveAt(0);
-
-				// If the path is empty, nuke it.
-				if(_currentPath.Count == 0) {
+				// Check to make sure the pickle is still there..
+				if(!PickleManager.IsPicklePresent(_currentPath.Last ())) {
 					_currentPath = null;
+				} else {
+					EntityManager.MoveEntityTo(goblinEntity, _currentPath[0]);
+					_currentPath.RemoveAt(0);
+
+					// If the path is empty, nuke it.
+					if(_currentPath.Count == 0) {
+						_currentPath = null;
+					}
 				}
 			} else if (PickleManager.IsPicklePresent(location)){ // Are we at a pickle?
 				// Eat it!
 				PickleManager.EatPickleAtLocation(location);
-			} else if (PickleManager.IsPickleInRange(location)){ // Is there a pickle in range?
+			} else if (IsPickleNearby(location, PickleSightRange, out pickleLocation)){ // Is there a pickle in range?
 				// Find it!
-				_currentPath.AddRange (_pathfinder.Navigate(tile.Position, location));
-				AIUpdate();
+				_currentPath = new List<Vector2>();
+				_currentPath.AddRange (_pathfinder.Navigate(tile.Position, pickleLocation));
 
+				AIUpdate();
 			} else if (tile.CanSetOnFire()){ // Can we set something on fire?
 				// Set it on fire!
 				if (Random.Range(0F,1F) < GoblinIgniteTilePercent){
@@ -77,5 +86,24 @@ public class GoblinManager : BaseMonoBehaviour {
 		var x = Random.Range (0, mapSize.x - 1);
 		var y = Random.Range (0, mapSize.y - 1);
 		EntityManager.CreateGoblin (new Vector2 (x, y));
+	}
+
+	public bool IsPickleNearby(Vector2 location, int distance, out Vector2 target) {
+		var closestPickle = PickleManager.GetClosestPickleInRange (location, distance);
+
+		if (closestPickle != null) {
+			target = closestPickle.GetTile ().Position;
+			return true;
+		}
+
+		target = Vector2.zero;
+
+		return false;
+
+	}
+
+	public void KillGoblin(GoblinEntity goblin) {
+		EntityManager.DestroyGoblin (goblin);
+		Messenger.Broadcast ("playGoblinDeath");
 	}
 }

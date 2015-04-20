@@ -11,10 +11,12 @@ public class FireSoundSystem : SoundMonoBehaviour {
 	public FMODAsset FireLoop;
 	public FMODAsset FireStart;
 	public FMODAsset BuildingDestruction;
+	public FMODAsset FireExtinguished;
 
 	private EventInstance _fireLoop;
 	private EventInstance _fireStart;
 	private EventInstance _buildingDestruction;
+	private EventInstance _fireExtinguished;
 	private float _lastFireLoopIntensityAverage = 0;
 	private readonly Dictionary<Vector2, float> _fireLoopIntensities = new Dictionary<Vector2, float>();
 
@@ -22,12 +24,14 @@ public class FireSoundSystem : SoundMonoBehaviour {
 	void Awake () {
 		_fireLoop = StudioSystem.GetEvent (FireLoop.path);
 		_fireStart = StudioSystem.GetEvent (FireStart.path);
+		_fireExtinguished = StudioSystem.GetEvent (FireExtinguished.path);
 		_buildingDestruction = StudioSystem.GetEvent (BuildingDestruction.path);
 		Messenger<Vector2, float>.AddListener ("playFireLoop", OnPlayFireLoop);
 		Messenger<Vector2>.AddListener ("stopFireLoop", OnStopFireLoop);
 		Messenger<Vector2, float>.AddListener ("setFireLoopIntensity", OnSetFireLoopIntensity);
 		Messenger.AddListener ("playFireStart", OnPlayFireStart);
 		Messenger.AddListener ("playBuildingDestruction", OnPlayBuildingDestruction);
+		Messenger.AddListener ("playFireExtinguished", OnPlayFireExtinguished);
 	}
 	
 	// Update is called once per frame
@@ -90,6 +94,18 @@ public class FireSoundSystem : SoundMonoBehaviour {
 		}
 
 		_fireLoopIntensities [tile] = intensity;
+	}
+
+	void OnPlayFireExtinguished() {
+		_fireExtinguished.start ();
+		_fireExtinguished.setVolume (MasterVolume);
+
+		StartCoroutine (StopExtinguishingFire ());
+	}
+
+	IEnumerator StopExtinguishingFire() {
+		yield return new WaitForSeconds (1.5f);
+		_fireExtinguished.stop (STOP_MODE.ALLOWFADEOUT);
 	}
 
 	void OnDestroy() {

@@ -82,7 +82,8 @@ public class Pathfinder {
 			currentNode = currentNode.Parent;
 			path.Add (currentNode);
 		}
-		
+		path.Insert (0, end);
+
 		return path.Select (wt => wt.Position).Reverse().ToArray();
 	}
 

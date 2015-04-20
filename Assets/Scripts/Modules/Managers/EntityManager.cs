@@ -135,7 +135,23 @@ public class EntityManager : BaseMonoBehaviour {
 		return _watchmen.ToArray ();
 	}
 
-	public void DestroyEntity(EntityBase entity) {
-		DestroyImmediate (entity);
+	public void DestroyPickle(EntityBase pickle) {
+		_pickles.Remove (pickle);
+		DestroyImmediate (pickle.gameObject);
+	}
+
+	public void DestroyFireman(EntityBase fireman) {
+		_firemen.Remove (fireman);
+		DestroyImmediate (fireman.gameObject);
+	}
+
+	public void DestroyGoblin(EntityBase goblin) {
+		_goblins.Remove (goblin);
+		DestroyImmediate (goblin.gameObject);
+	}
+
+	public void DestroyWatcham(EntityBase watchman) {
+		_watchmen.Remove (watchman);
+		DestroyImmediate (watchman.gameObject);
 	}
 }
