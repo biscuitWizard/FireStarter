@@ -6,81 +6,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Callbacks;
-using System;
 
-#if UNITY_WEBPLAYER
-/* Cut down version that compiles under restricted WebPlayer .NET runtime
-   and gives useful(hopefully) error message to the developer */
-[InitializeOnLoad]
-public class FMODEditorExtension : MonoBehaviour
-{
-    static FMODEditorExtension()
-    {
-        Debug.LogError("FMOD Studio Integration: WebPlayer not supported. Please change your platform.");
-    }
-    
-    [MenuItem ("FMOD/Import Banks")]
-	public static void ImportBanks()
-	{
-		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "WebPlayer not supported. Please change your platform.", "OK");
-	}
-	
-	[MenuItem ("FMOD/Refresh Event List")]
-	static bool CheckRefreshEventList()
-	{
-		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "WebPlayer not supported. Please change your platform.", "OK");
-        return false;
-	}
-	
-	[MenuItem ("FMOD/Refresh Event List")]
-	public static void RefreshEventList()
-    {
-		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "WebPlayer not supported. Please change your platform.", "OK");
-    }
-    
-    [MenuItem ("FMOD/Online Manual")]
-	static void OnlineManual()
-	{
-		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "WebPlayer not supported. Please change your platform.", "OK");
-	}
-    
-    [MenuItem ("FMOD/Online API Documentation")]
-	static void OnlineAPIDocs()
-	{
-		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "WebPlayer not supported. Please change your platform.", "OK");
-	}
-	
-	[MenuItem ("FMOD/About Integration")]
-	static void AboutIntegration() 
-	{
-		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "WebPlayer not supported. Please change your platform.", "OK");
-	}
-    
-    /* Stubs so all the other scripts compile */
-    static void Update()
-    {
-    }
-			
-	public static void AuditionEvent(FMODAsset asset)
-	{
-	}
-	
-	public static void StopEvent()
-	{
-	}
-	
-	public static void SetEventParameterValue(int index, float val)
-	{
-	}
-	
-	public static FMOD.Studio.EventDescription GetEventDescription(string idString)
-	{
-        return null;
-	}
-}
-
-#else
-/* Full version of editor extensions */
 [InitializeOnLoad]
 public class FMODEditorExtension : MonoBehaviour
 {
@@ -150,11 +76,6 @@ public class FMODEditorExtension : MonoBehaviour
 	
 	static void Update()
     {
-        if (EditorApplication.isCompiling)
-        {
-            UnloadAllBanks();
-        }
-		
         if (sFMODSystem != null && sFMODSystem.isValid())
 		{
 			ERRCHECK(sFMODSystem.update());
@@ -211,7 +132,7 @@ public class FMODEditorExtension : MonoBehaviour
 				}
 			}
 			
-			Guid id = new Guid();			
+			FMOD.GUID id = new FMOD.GUID();			
 			if (!ERRCHECK(FMOD.Studio.Util.ParseID(idString, out id)))
 			{
 				return null;
@@ -231,18 +152,16 @@ public class FMODEditorExtension : MonoBehaviour
 	[MenuItem ("FMOD/Import Banks")]
 	public static void ImportBanks()
 	{
-		if (PrepareIntegration())
-		{
+		PrepareIntegration();
 		
-			string filePath = "";
-			if (!LocateProject(ref filePath))
-			{
-				return;
-			}
-			
-			ImportAndRefresh(filePath + "/" + studioPlatformDirectoryName());
+		string filePath = "";
+		if (!LocateProject(ref filePath))
+		{
+			return;
 		}
-	}	
+		
+		ImportAndRefresh(filePath + "/" + studioPlatformDirectoryName());
+	}
 	
 	[MenuItem ("FMOD/Refresh Event List", true)]
 	static bool CheckRefreshEventList()
@@ -514,29 +433,28 @@ public class FMODEditorExtension : MonoBehaviour
 	[MenuItem ("FMOD/About Integration")]
 	static void AboutIntegration() 
 	{
-		if (PrepareIntegration())
+		PrepareIntegration();
+		
+        if (sFMODSystem == null || !sFMODSystem.isValid())
 		{
+			CreateSystem();
+			
 			if (sFMODSystem == null || !sFMODSystem.isValid())
 			{
-				CreateSystem();
-				
-				if (sFMODSystem == null || !sFMODSystem.isValid())
-				{
-					EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "Unable to retrieve version, check the version number in fmod.cs", "OK");
-				}
+				EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "Unable to retrieve version, check the version number in fmod.cs", "OK");
 			}
-			
-			FMOD.System sys;
-			sFMODSystem.getLowLevelSystem(out sys);
-			
-			uint version;
-			if (!ERRCHECK (sys.getVersion(out version)))
-			{
-				return;
-			}
-
-			EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "Version: " + getVersionString(version), "OK");
 		}
+		
+		FMOD.System sys;
+		sFMODSystem.getLowLevelSystem(out sys);
+		
+        uint version;
+		if (!ERRCHECK (sys.getVersion(out version)))
+		{
+			return;
+		}
+
+		EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "Version: " + getVersionString(version), "OK");
 	}
 
 	static string getVersionString(uint version)
@@ -653,13 +571,13 @@ public class FMODEditorExtension : MonoBehaviour
 				}
 				ERRCHECK(result);
 				
-				Guid id;
+				FMOD.GUID id;
 				ERRCHECK(desc.getID(out id));
 				
 			    var asset = ScriptableObject.CreateInstance<FMODAsset>();
 			    asset.name = path.Substring(path.LastIndexOf('/') + 1);
 				asset.path = path;
-				asset.id = id.ToString("B");
+				asset.id = new System.Guid((int)id.Data1, (short)id.Data2, (short)id.Data3, id.Data4).ToString("B");
 				//Debug.Log("name = " + asset.name + ", id = " + asset.id);
 				
 				newAssets.Add(asset);
@@ -799,8 +717,7 @@ public class FMODEditorExtension : MonoBehaviour
 					FMOD.RESULT result = sFMODSystem.loadBankFile(s, FMOD.Studio.LOAD_BANK_FLAGS.NORMAL, out bank);
 					if (result == FMOD.RESULT.ERR_VERSION)
 					{
-						//FMOD.Studio.UnityUtil.LogError("These banks were built with an incompatible version of FMOD Studio. Make sure the unity integration matches the FMOD Studio version. (current integration version = " + getVersionString(FMOD.VERSION.number) + ")" );
-						FMOD.Studio.UnityUtil.LogError("Bank " + s + " was built with an incompatible version of FMOD Studio. Make sure the unity integration matches the FMOD Studio version." );
+						FMOD.Studio.UnityUtil.LogError("These banks were built with an incompatible version of FMOD Studio. Make sure the unity integration matches the FMOD Studio version (current integration version = " + getVersionString(FMOD.VERSION.number) + ")" );
 						return false;
 					}
 					if (result != FMOD.RESULT.OK)
@@ -823,53 +740,59 @@ public class FMODEditorExtension : MonoBehaviour
 		return FMOD.Studio.UnityUtil.ERRCHECK(result);
 	}
 	
-	static bool PrepareIntegration()
+	static void PrepareIntegration()
 	{
-		// Cleanup stale DLL's from the old versions
-		if (Application.platform == RuntimePlatform.WindowsEditor)
-		{
-			var projectRoot = new System.IO.DirectoryInfo(Application.dataPath).Parent;
-			var lowLevelLib = projectRoot.FullName + "/fmod.dll";					
-			DeleteBinaryFile(lowLevelLib);		
-			var studioLib = projectRoot.FullName + "/fmodstudio.dll";
-			DeleteBinaryFile(studioLib);		
-		}
-		else if (Application.platform == RuntimePlatform.OSXEditor)
-		{
-			var projectRoot = new System.IO.DirectoryInfo(Application.dataPath).Parent;
-			var lowLevelLib = projectRoot.FullName + "/fmod.dylib";					
-			DeleteBinaryFile(lowLevelLib);		
-			var studioLib = projectRoot.FullName + "/fmodstudio.dylib";
-			DeleteBinaryFile(studioLib);
-		}
-		
-		#if !UNITY_5_0
 		if (!UnityEditorInternal.InternalEditorUtility.HasPro())
 		{
+			Debug.Log("Unity basic license detected: running integration in Basic compatible mode");
+			
+			// Copy the FMOD binaries to the root directory of the project
 			if (Application.platform == RuntimePlatform.WindowsEditor)
 			{
+				var pluginPath = Application.dataPath + "/Plugins/x86/";				
 				var projectRoot = new System.IO.DirectoryInfo(Application.dataPath).Parent;
-				var lowLevelLib = projectRoot.FullName + "/fmod.dll";					
-				DeleteBinaryFile(lowLevelLib);		
-				var studioLib = projectRoot.FullName + "/fmodstudio.dll";
-				DeleteBinaryFile(studioLib);		
+				
+				var fmodFile = new System.IO.FileInfo(pluginPath + "fmod.dll");
+				if (fmodFile.Exists)
+				{
+					var dest = projectRoot.FullName + "/fmod.dll";
+					
+					DeleteBinaryFile(dest);						
+					fmodFile.MoveTo(dest);
+				}
+				
+				var studioFile = new System.IO.FileInfo(pluginPath + "fmodstudio.dll");
+				if (studioFile.Exists)
+				{
+					var dest = projectRoot.FullName + "/fmodstudio.dll";
+					
+					DeleteBinaryFile(dest);
+					studioFile.MoveTo(dest);
+				}
 			}
 			else if (Application.platform == RuntimePlatform.OSXEditor)
 			{
+				var pluginPath = Application.dataPath + "/Plugins/";				
 				var projectRoot = new System.IO.DirectoryInfo(Application.dataPath).Parent;
-				var lowLevelLib = projectRoot.FullName + "/fmod.dylib";					
-				DeleteBinaryFile(lowLevelLib);		
-				var studioLib = projectRoot.FullName + "/fmodstudio.dylib";
-				DeleteBinaryFile(studioLib);
+				
+				var fmodFile = new System.IO.FileInfo(pluginPath + "fmod.bundle/Contents/MacOS/fmod");
+				if (fmodFile.Exists)
+				{
+					var dest = projectRoot.FullName + "/fmod.dylib";
+					
+					DeleteBinaryFile(dest);
+					fmodFile.MoveTo(dest);
+				}
+				
+				var studioFile = new System.IO.FileInfo(pluginPath + "fmodstudio.bundle/Contents/MacOS/fmodstudio");
+				if (studioFile.Exists)
+				{
+					var dest = projectRoot.FullName + "/fmodstudio.dylib";
+
+					DeleteBinaryFile(dest);
+					studioFile.MoveTo(dest);
+				}
 			}
-			
-			EditorUtility.DisplayDialog("FMOD Studio Unity Integration", "FMOD Studio Integration requires either Unity 4 Pro or Unity 5", "OK");
-			return false;
-		}
-		else
-		#endif
-		{
-			return true;
 		}
 	}
 	
@@ -917,7 +840,5 @@ public class FMODAssetPathComparer : IEqualityComparer<FMODAsset>
         return  asset.path.GetHashCode();
     }
 }
-
-#endif
 
 #endif

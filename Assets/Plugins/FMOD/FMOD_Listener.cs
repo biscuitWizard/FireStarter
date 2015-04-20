@@ -46,33 +46,62 @@ public class FMOD_Listener : MonoBehaviour
 	string getStreamingAsset(string fileName)
 	{
 		string bankPath = "";
-        if (Application.platform == RuntimePlatform.Android)
+		if (Application.platform == RuntimePlatform.WindowsEditor || 
+			Application.platform == RuntimePlatform.OSXEditor ||
+		    Application.platform == RuntimePlatform.WindowsPlayer ||
+		    Application.platform == RuntimePlatform.LinuxPlayer
+#if UNITY_PS4
+		    || Application.platform == RuntimePlatform.PS4
+#endif
+#if UNITY_XBOXONE
+			|| Application.platform == RuntimePlatform.XboxOne
+#endif
+#if UNITY_WIIU
+            || Application.platform == RuntimePlatform.WiiU
+#endif
+		    )
+		{
+			bankPath = Application.dataPath + "/StreamingAssets";
+		}
+		else if (Application.platform == RuntimePlatform.OSXPlayer ||
+			Application.platform == RuntimePlatform.OSXDashboardPlayer)
+		{
+			bankPath = Application.dataPath + "/Data/StreamingAssets";
+		}
+		else if (Application.platform == RuntimePlatform.IPhonePlayer)
+		{
+			bankPath = Application.dataPath + "/Raw";
+		}
+		else if (Application.platform == RuntimePlatform.Android)
 		{
 			bankPath = "jar:file://" + Application.dataPath + "!/assets";
 		}
-        #if (UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6)
+#if (UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5 || UNITY_4_6)
         else if (Application.platform == RuntimePlatform.MetroPlayerARM || 
                  Application.platform == RuntimePlatform.MetroPlayerX86 || 
                  Application.platform == RuntimePlatform.MetroPlayerX64
             )
-        #else // UNITY 5 enum
+        {
+            bankPath = "ms-appx:///Data/StreamingAssets";
+        }
+#else // UNITY 5 enum
         else if (Application.platform == RuntimePlatform.WSAPlayerARM || 
 		         Application.platform == RuntimePlatform.WSAPlayerX86 || 
 		         Application.platform == RuntimePlatform.WSAPlayerX64
             )
-        #endif
         {
-            // TODO: not sure but I don't think Application.streamingAssetsPath has ms-appx:// format
             bankPath = "ms-appx:///Data/StreamingAssets";
         }
+#endif
         else
-        {
-            bankPath = Application.streamingAssetsPath;
+		{		
+			FMOD.Studio.UnityUtil.LogError("Unknown platform!");
+			return "";
 		}
 		
 		string assetPath = bankPath + "/" + fileName;
 		
-        #if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 		// Unpack the compressed JAR file
 		string unpackedJarPath = Application.persistentDataPath + "/" + fileName;
 		
@@ -107,7 +136,7 @@ public class FMOD_Listener : MonoBehaviour
 		//FMOD.Studio.UnityUtil.Log("Unpacked bank size = " + fi.Length);
 		
 		assetPath = unpackedJarPath;
-        #endif
+#endif
 
 		return assetPath;
 	}
@@ -177,7 +206,7 @@ public class FMOD_Listener : MonoBehaviour
 		if (sys != null && sys.isValid())
 		{
 			var attributes = UnityUtil.to3DAttributes(gameObject, cachedRigidBody);		
-			ERRCHECK(sys.setListenerAttributes(0, attributes));
+			ERRCHECK(sys.setListenerAttributes(attributes));
 		}
 	}
 	

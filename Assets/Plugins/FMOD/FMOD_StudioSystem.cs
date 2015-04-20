@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,9 +18,9 @@ namespace FMOD
 				return temp;
 			}
 			
-			static public ATTRIBUTES_3D to3DAttributes(this Vector3 pos)
+			static public _3D_ATTRIBUTES to3DAttributes(this Vector3 pos)
 			{
-				FMOD.Studio.ATTRIBUTES_3D attributes = new FMOD.Studio.ATTRIBUTES_3D();
+				FMOD.Studio._3D_ATTRIBUTES attributes = new FMOD.Studio._3D_ATTRIBUTES();
 				attributes.forward = toFMODVector(Vector3.forward);
 				attributes.up = toFMODVector(Vector3.up);
 				attributes.position = toFMODVector(pos);
@@ -29,9 +28,9 @@ namespace FMOD
 				return attributes;
 			}
 			
-			static public ATTRIBUTES_3D to3DAttributes(GameObject go, Rigidbody rigidbody = null)
+			static public _3D_ATTRIBUTES to3DAttributes(GameObject go, Rigidbody rigidbody = null)
 			{
-				FMOD.Studio.ATTRIBUTES_3D attributes = new FMOD.Studio.ATTRIBUTES_3D();
+				FMOD.Studio._3D_ATTRIBUTES attributes = new FMOD.Studio._3D_ATTRIBUTES();
 				attributes.forward = toFMODVector(go.transform.forward);
 				attributes.up = toFMODVector(go.transform.up);
 				attributes.position = toFMODVector(go.transform.position);
@@ -169,13 +168,13 @@ public class FMOD_StudioSystem : MonoBehaviour
 			return null;
 		}
 		
-		if (eventDescriptions.ContainsKey(path) && eventDescriptions[path].isValid())
+		if (eventDescriptions.ContainsKey(path))
 		{
 			ERRCHECK(eventDescriptions[path].createInstance(out instance));
 		}
 		else
 		{
-			Guid id = new Guid();
+			FMOD.GUID id = new FMOD.GUID();
 			
 			if (path.StartsWith("{"))
 			{
@@ -195,7 +194,7 @@ public class FMOD_StudioSystem : MonoBehaviour
 			
 			if (desc != null && desc.isValid())
 			{
-				eventDescriptions[path] = desc;
+				eventDescriptions.Add(path, desc);
 				ERRCHECK(desc.createInstance(out instance));
 			}
 		}
@@ -223,7 +222,7 @@ public class FMOD_StudioSystem : MonoBehaviour
 		var instance = GetEvent(path);
 		if (instance == null) 
 		{			
-			FMOD.Studio.UnityUtil.LogWarning("PlayOneShot couldn't find event: \"" + path + "\"");
+			FMOD.Studio.UnityUtil.LogWarning("PlayOneShot coudn't find event: \"" + path + "\"");
 			return;
 		}
 		
@@ -257,51 +256,48 @@ public class FMOD_StudioSystem : MonoBehaviour
 
 #if FMOD_LIVEUPDATE
         flags |= FMOD.Studio.INITFLAGS.LIVEUPDATE;
-		
-		// Unity 5 liveupdate workaround
-        if (Application.unityVersion.StartsWith("5"))
-        {
-            FMOD.Studio.UnityUtil.LogWarning("FMOD_StudioSystem: detected Unity 5, running on port 9265");
-            FMOD.System sys;
-            ERRCHECK(system.getLowLevelSystem(out sys));
-            FMOD.ADVANCEDSETTINGS advancedSettings = new FMOD.ADVANCEDSETTINGS();
-            advancedSettings.profilePort = 9265;
-            ERRCHECK(sys.setAdvancedSettings(ref advancedSettings));
-        }
 #endif
 
-		#if FMOD_DEBUG
-		FMOD.Debug.Initialize(FMOD.DEBUG_FLAGS.LOG, FMOD.DEBUG_MODE.CALLBACK, LogCallback, null);
-		#endif
+#if true //UNITY_ANDROID && !UNITY_EDITOR
 
+        // Force the system sample rate to the output rate to allow for the fast mixer
+        if (FMOD.VERSION.number >= 0x00010500)
+        {
+            FMOD.System sys;
+            ERRCHECK(system.getLowLevelSystem(out sys));
+            int outputRate = 48000;
+            {
+                System.Text.StringBuilder str = new System.Text.StringBuilder();
+                FMOD.GUID guid;
+                FMOD.SPEAKERMODE speakermode;
+                int speakermodechannels;
+                ERRCHECK(sys.getDriverInfo(0, str, str.Capacity, out guid, out outputRate, out speakermode, out speakermodechannels));
+            }
+
+            ERRCHECK(sys.setSoftwareFormat(outputRate, FMOD.SPEAKERMODE.DEFAULT, 0));
+        }
+#endif
 
         FMOD.Studio.UnityUtil.Log("FMOD_StudioSystem: system.init");
         FMOD.RESULT result = FMOD.RESULT.OK;
         result = system.initialize(1024, flags, FMOD.INITFLAGS.NORMAL, global::System.IntPtr.Zero);
 
-        if (result == FMOD.RESULT.ERR_HEADER_MISMATCH)
+        if (result == FMOD.RESULT.ERR_NET_SOCKET_ERROR)
+        {
+#if false && FMOD_LIVEUPDATE
+			FMOD.Studio.UnityUtil.LogWarning("LiveUpdate disabled: socket in already in use");
+			flags &= ~FMOD.Studio.INITFLAGS.LIVEUPDATE;
+        	result = system.init(1024, flags, FMOD.INITFLAGS.NORMAL, (System.IntPtr)null);
+#else
+            FMOD.Studio.UnityUtil.LogError("Unable to initalize with LiveUpdate: socket is already in use");
+#endif
+        }
+        else if (result == FMOD.RESULT.ERR_HEADER_MISMATCH)
         {
             FMOD.Studio.UnityUtil.LogError("Version mismatch between C# script and FMOD binary, restart Unity and reimport the integration package to resolve this issue.");
         }
         else
         {
-            ERRCHECK(result);
-        }
-		
-		// Dummy flush and update to get network state
-        ERRCHECK(system.flushCommands());
-        result = system.update();
-        
-        // Restart without liveupdate if there was a socket error
-        if (result == FMOD.RESULT.ERR_NET_SOCKET_ERROR)
-        {
-            FMOD.Studio.UnityUtil.LogWarning("LiveUpdate disabled: socket in already in use");
-            flags &= ~FMOD.Studio.INITFLAGS.LIVEUPDATE;
-            ERRCHECK(system.release());
-            ERRCHECK(FMOD.Studio.System.create(out system));
-            FMOD.System sys;
-            ERRCHECK(system.getLowLevelSystem(out sys));
-            result = system.initialize(1024, flags, FMOD.INITFLAGS.NORMAL, global::System.IntPtr.Zero);
             ERRCHECK(result);
         }
 
@@ -354,24 +350,6 @@ public class FMOD_StudioSystem : MonoBehaviour
                 sInstance = null;
             }
 		}
-	}
-	
-	FMOD.RESULT LogCallback(FMOD.DEBUG_FLAGS flags, string file, int line, string func, string message)
-	{
-		string formattedMessage = String.Format("{2}\t{3}", file, line, func, message);
-		if ((flags & FMOD.DEBUG_FLAGS.ERROR) > 0)
-		{
-			FMOD.Studio.UnityUtil.LogError(formattedMessage);
-		}
-		else if ((flags & FMOD.DEBUG_FLAGS.WARNING) > 0)
-		{
-			FMOD.Studio.UnityUtil.LogWarning(formattedMessage);
-		}
-		else
-		{
-			FMOD.Studio.UnityUtil.Log(formattedMessage);
-		}
-        return FMOD.RESULT.OK;
 	}
 	
 	static bool ERRCHECK(FMOD.RESULT result)
