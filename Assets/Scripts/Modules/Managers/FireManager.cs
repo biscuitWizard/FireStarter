@@ -27,7 +27,8 @@ public class FireManager : BaseMonoBehaviour {
 			var firesToCheck = _fires.OrderBy (f => System.Guid.NewGuid()).Take (FiresToCheckSpreadPerTick);
 			foreach(var fire in firesToCheck) {
 				var roll = Random.Range (0f, 1f);
-				if(roll < NearbyTileFlammabilityPercent) { 
+				if(roll < NearbyTileFlammabilityPercent
+				   && fire.CanSetOnFire()) { 
 					StartFire (fire.Position + Direction.Down.ToVector2(), FireStage.Kindling);
 				}
 			}

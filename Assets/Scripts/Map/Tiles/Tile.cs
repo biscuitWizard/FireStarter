@@ -28,7 +28,6 @@ public class Tile : BaseMonoBehaviour {
 	}
 
 	public void SetFire(FireStage severity) {
-		Debug.Log ("Set fire command called");
 		_flammableTile.StartFire (severity);
 	}
 

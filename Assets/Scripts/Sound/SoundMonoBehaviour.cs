@@ -11,6 +11,11 @@ public class SoundMonoBehaviour : MonoBehaviour {
 	}
 
 	protected bool IsSoundPlaying(EventInstance instance) {
+		if (instance == null) {
+			Debug.LogError ("Null event instance");
+			return false;
+		}
+
 		var playbackState = PLAYBACK_STATE.STOPPED;
 
 		instance.getPlaybackState (out playbackState);

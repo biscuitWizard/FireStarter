@@ -5,7 +5,7 @@ using FMOD.Studio;
 
 [RequireComponent(typeof(TileRenderer))]
 public class FlammableTile : BaseMonoBehaviour {
-	public GameObject ScorcedTilePrefrab;
+	public Sprite ScorcedTileSprite;
 	public FirePrefab[] FirePrefabs;
 
 	public float MinStageLifetime = 8f;
@@ -50,8 +50,9 @@ public class FlammableTile : BaseMonoBehaviour {
 
 			if((_currentStage == FireStage.BurntOut)) {
 				// We're done!
-				Debug.Log ("Render burnt tile.");
 				_tileRenderer.ClearFire();
+				_tileRenderer.Tile.spriteRenderer.sprite = ScorcedTileSprite;
+				
 				// Stop the sound.
 				Messenger<Vector2>.Broadcast ("stopFireLoop", _tileRenderer.Tile.Position);
 				Messenger.Broadcast ("playBuildingDestruction");
@@ -66,13 +67,11 @@ public class FlammableTile : BaseMonoBehaviour {
 	public void StartFire(FireStage stage) {
 		_currentStage = stage;
 		_lastStageChange = Time.realtimeSinceStartup;
-		Debug.Log ("New Stage: " + stage);
 		if (stage == FireStage.BurntOut
 			|| stage == FireStage.Flammable
 			|| stage == FireStage.NotFlammable) {
 			_tileRenderer.ClearFire ();
 		} else {
-			Debug.Log ("Starting fire: " + FirePrefabs.First (p => p.Stage == _currentStage).Stage);
 			if(stage == FireStage.Kindling) {
 				// Start the sounds.
 				Messenger<Vector2, float>.Broadcast ("playFireLoop", _tileRenderer.Tile.Position, 0f);
