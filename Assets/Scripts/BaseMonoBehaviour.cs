@@ -5,12 +5,15 @@ public class BaseMonoBehaviour : MonoBehaviour {
 	const float AITickInterval = 2;
 	private static bool Paused;
 	private Coroutine AICoroutine;
+	private int _ticks;
 
 	// Update is called once per frame
 	void Update () {
 		if (Paused) {
 			return;
 		}
+
+		_ticks++;
 
 		if (AICoroutine == null) {
 			AICoroutine = StartCoroutine (AIUpdateRoutine ());
@@ -48,5 +51,12 @@ public class BaseMonoBehaviour : MonoBehaviour {
 
 	protected void Unpause() {
 		Paused = false;
+	}
+
+	/// <summary>
+	/// The number of logic ticks that have gone by
+	/// </summary>
+	protected int GetTicks() {
+		return _ticks;
 	}
 }

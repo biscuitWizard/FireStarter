@@ -25,6 +25,31 @@ public class EntityManager : BaseMonoBehaviour {
 		Messenger<Vector2>.AddListener<EntityBase> ("placeWatchman", CreateWatchman);
 	}
 
+	struct GoblinDistance {
+		public float Distance;
+		public EntityBase Goblin;
+		public GoblinDistance(EntityBase goblin, float distance) {
+			Goblin = goblin;
+			Distance = distance;
+		}
+	}
+	public EntityBase GetClosestGoblin(Vector2 location, int distance) {
+
+		var goblins = _goblins.Select (g => {
+			var goblinLocation = g.GetTile ().Position;
+			var xd = goblinLocation.x - location.x;
+			var yd = goblinLocation.y - location.y;
+			
+			return new GoblinDistance(g, Mathf.Sqrt(Mathf.Pow (xd, 2) + Mathf.Pow (yd,2)));
+		})
+			.OrderBy (gd => gd.Distance);
+		
+		return goblins
+			.Where (gd => gd.Distance < distance)
+				.Select (gd => gd.Goblin)
+				.FirstOrDefault();
+	}
+
 	public List<Vector2> getLegalMoves(Vector2 currentPosition){
 
 		List<Vector2> legalMoves = new List<Vector2> ();

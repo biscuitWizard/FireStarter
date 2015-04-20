@@ -78,28 +78,4 @@ public class GoblinManager : BaseMonoBehaviour {
 		var y = Random.Range (0, mapSize.y - 1);
 		EntityManager.CreateGoblin (new Vector2 (x, y));
 	}
-
-	public GoblinDistance GetClosestGoblinDistanceInRange(Vector2 location, int distance = 5) {
-		var goblinsInRange = EntityManager.GetGoblins ().Select (g => {
-			var goblinLocation = g.GetLocation();
-			var xd = goblinLocation.x - location.x;
-			var yd = goblinLocation.y - location.y;
-			
-			return new GoblinDistance(g, Mathf.Sqrt(Mathf.Pow (xd, 2) + Mathf.Pow (yd,2)));
-		})
-			.Where (gd => gd.Distance <= distance)
-				.OrderBy (gd => gd.Distance);
-		
-		return goblinsInRange.First();
-	}
-	
-	public class GoblinDistance {
-		public EntityBase Goblin;
-		public float Distance;
-		
-		public GoblinDistance(EntityBase goblin, float distance) {
-			Goblin = goblin;
-			Distance = distance;
-		}
-	}
 }
