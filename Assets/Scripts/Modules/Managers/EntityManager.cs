@@ -8,6 +8,8 @@ public class EntityManager : BaseMonoBehaviour {
 	public MapModule Map;
 	public GameModule Game;
 
+	public TextAsset GoblinNames;
+
 	public GameObject GoblinPrefab;
 	public GameObject WatchmanPrefab;
 	public GameObject PicklePrefab;
@@ -82,9 +84,17 @@ public class EntityManager : BaseMonoBehaviour {
 	public EntityBase CreateGoblin(Vector2 position) {
 		var goblin = Instantiate (GoblinPrefab);
 		var goblinEntity = goblin.GetComponent<GoblinEntity> ();
+		// Random name.
+		// lol
+		goblinEntity.Name = GoblinNames.text.Split (new char[] { ' ' }).OrderBy (t => System.Guid.NewGuid ()).First ();
 
 		_goblins.Add (goblinEntity);
 		MoveEntityTo (goblinEntity, position);
+
+		try {
+			Messenger<GoblinEntity>.Broadcast("goblinCreated", goblinEntity);
+		} catch {
+		}
 
 		return goblinEntity;
 	}
@@ -146,6 +156,11 @@ public class EntityManager : BaseMonoBehaviour {
 	}
 
 	public void DestroyGoblin(EntityBase goblin) {
+		try {
+			Messenger<GoblinEntity>.Broadcast("goblinDestroyed", (GoblinEntity)goblin);
+		} catch {
+		}
+
 		_goblins.Remove (goblin);
 		DestroyImmediate (goblin.gameObject);
 	}
