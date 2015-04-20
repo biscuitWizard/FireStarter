@@ -3,11 +3,12 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(EntityManager))]
+[RequireComponent(typeof(EntityManager), typeof(FireManager))]
 public class GoblinManager : BaseMonoBehaviour {
 
 	public EntityManager EntityManager;
 	public PickleManager PickleManager;
+	public FireManager FireManager;
 	public MapModule Map;
 	public GameModule Game;
 	
@@ -58,7 +59,7 @@ public class GoblinManager : BaseMonoBehaviour {
 						}
 					}
 
-					tile.SetFire(FireStage.Kindling);
+					FireManager.StartFire(tile.Position, FireStage.Kindling);
 				}
 			} else {
 				// Move randomly looking for mischief

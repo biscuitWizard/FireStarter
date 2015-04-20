@@ -52,9 +52,9 @@ public class FireManager : BaseMonoBehaviour {
 	}
 
 	public void ExtinguishFire(Vector2 location) {
-		//var fire = _activeFires.First (f => f.Location == location);
-		//_activeFires.Remove (fire);
-		//Messenger<Vector2, Item>.Broadcast ("removeItemFromMap", location, fire);
+		var fire = _fires.First (f => f.Position == location);
+		_fires.Remove (fire);
+		fire.GetComponent<FlammableTile> ().StopFire ();
 	}
 
 	public void StartFire(Vector2 location, FireStage severity) {
@@ -67,18 +67,18 @@ public class FireManager : BaseMonoBehaviour {
 		return _fires.ToArray ();
 	}
 
-	public Vector2 GetClosestBurningTile(Vector2 location){
+	public Vector2 GetClosestBurningTile(Vector2 location, int distance) {
 
-		var fires = GetBurningTiles ().Select (f => {
+		var fires = _fires.Select (f => {
 			var fireLocation = f.Position;
 			var xd = fireLocation.x - location.x;
 			var yd = fireLocation.y - location.y;
 
 			return new FireDistance(f, Mathf.Sqrt(Mathf.Pow (xd, 2) + Mathf.Pow (yd,2)));
 		})
-				.OrderBy (fd => fd.Distance);
+			.OrderBy (fd => fd.Distance);
 
-		return fires.First().Tile.Position;
+		return fires.FirstOrDefault (fd => fd.Distance < distance).Tile.Position;
 	}
 	
 	private class FireDistance {
