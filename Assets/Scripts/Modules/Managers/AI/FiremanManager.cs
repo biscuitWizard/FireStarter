@@ -40,14 +40,12 @@ public class FiremanManager : BaseMonoBehaviour {
 					_currentPath = null;
 				}
 			} else if(IsFireAdjacent(tile.Position, out fire)) { // Extinguish an adjacent fire.
-				// Get the tile.
-				var fireTile = Map.GetTile (fire);
-
 				// Extinguish the fire.
-				FireManager.ExtinguishFire(fireTile.Position);
+				FireManager.ExtinguishFire(fire);
 			} else if(IsFireNearby(tile.Position, FiremanSightRange, out fire)) { // Find the nearest fire.
 				// Navigate to path.
-				_currentPath = _pathfinder.Navigate(tile.Position, fire);
+				_currentPath = new List<Vector2>();
+				_currentPath.AddRange (_pathfinder.Navigate(tile.Position, fire));
 
 				// Move along that path by one.
 				AIUpdate();
@@ -102,17 +100,18 @@ public class FiremanManager : BaseMonoBehaviour {
 			var burningTile = fires.FirstOrDefault (f => f.Position == location + direction);
 			
 			if (burningTile != null) {
-				fire = burningTile;
+				fire = burningTile.Position;
 				return true;
 			}
 		}
 
+		fire = Vector2.zero;
 		return false;
 	}
 
 	bool IsFireNearby(Vector2 location, int distance, out Vector2 fire) {
 		fire = FireManager.GetClosestBurningTile (location, distance);
 
-		return fire != null;
+		return fire != new Vector2(-1, -1);
 	}
 }

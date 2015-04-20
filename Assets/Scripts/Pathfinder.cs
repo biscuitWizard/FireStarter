@@ -17,7 +17,6 @@ public class Pathfinder {
 	}
 
 	private readonly MapModule _map;
-	private readonly EntityManager _entity;
 	private readonly Direction[] _searchableDirections = new Direction[] {
 		Direction.Up,
 		Direction.Left,
@@ -27,7 +26,6 @@ public class Pathfinder {
 
 	public Pathfinder(MapModule map, EntityManager entity) {
 		_map = map;
-		_entity = entity;
 	}
 	
 	public Vector2[] Navigate(Vector2 start, Vector2 end) {

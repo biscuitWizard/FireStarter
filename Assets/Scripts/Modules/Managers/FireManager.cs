@@ -78,7 +78,11 @@ public class FireManager : BaseMonoBehaviour {
 		})
 			.OrderBy (fd => fd.Distance);
 
-		return fires.FirstOrDefault (fd => fd.Distance < distance).Tile.Position;
+		if (fires.Any (fd => fd.Distance < distance)) {
+			return fires.First (fd => fd.Distance < distance).Tile.Position;
+		} else {
+			return new Vector2(-1, -1);
+		}
 	}
 	
 	private class FireDistance {
