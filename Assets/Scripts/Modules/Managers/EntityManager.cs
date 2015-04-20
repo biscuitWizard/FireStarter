@@ -110,7 +110,7 @@ public class EntityManager : BaseMonoBehaviour {
 	}
 
 	public EntityBase CreateFireman(Vector2 position) {
-		var fireman = Instantiate (WatchmanPrefab);
+		var fireman = Instantiate (FiremanPrefab);
 		var firemanEntity = fireman.GetComponent<FiremanEntity> ();
 		
 		_firemen.Add (firemanEntity);

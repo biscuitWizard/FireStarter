@@ -84,7 +84,7 @@ public class FiremanManager : BaseMonoBehaviour {
 	}
 
 	public void GenerateFiremen() {
-		EntityManager.CreateFireman(Vector2.zero);
+		EntityManager.CreateFireman(new Vector2(5, 5));
 	}
 
 	bool IsFireAdjacent(Vector2 location, out Vector2 fire) {
