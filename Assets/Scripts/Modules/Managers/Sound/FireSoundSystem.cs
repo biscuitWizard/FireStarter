@@ -52,6 +52,9 @@ public class FireSoundSystem : SoundMonoBehaviour {
 	}
 
 	void OnPlayFireLoop(Vector2 tile, float intensity) {
+		if (_fireLoop == null)
+			return;
+
 		if (!_fireLoopIntensities.ContainsKey (tile)) {
 			_fireLoopIntensities.Add (tile, intensity);
 		}
@@ -59,7 +62,6 @@ public class FireSoundSystem : SoundMonoBehaviour {
 		if (IsSoundPlaying (_fireLoop)) {
 			return;
 		}
-
 		_fireLoop.start ();
 		_fireLoop.setVolume (MasterVolume);
 	}
@@ -76,6 +78,9 @@ public class FireSoundSystem : SoundMonoBehaviour {
 		if (IsSoundPlaying (_fireStart)) {
 			return;
 		}
+
+		if (_fireStart == null)
+			return;
 
 		_fireStart.start ();
 		_fireStart.setVolume (MasterVolume);

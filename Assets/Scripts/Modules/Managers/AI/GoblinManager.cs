@@ -75,7 +75,6 @@ public class GoblinManager : BaseMonoBehaviour {
 				var legalMoves = EntityManager.getLegalMoves(location);
 				float countOfLegalMoves = (float) legalMoves.Count;
 				int randomMove = Mathf.FloorToInt(Random.Range(0F, countOfLegalMoves));
-				Debug.Log(string.Format("Going to try to move to ({0},{1}).", legalMoves[randomMove].x, legalMoves[randomMove].y));
 				EntityManager.MoveEntityTo(goblinEntity, legalMoves[randomMove]);
 			}
 		}
@@ -83,7 +82,7 @@ public class GoblinManager : BaseMonoBehaviour {
 
 	public void GenerateGoblins() {
 		var mapSize = Game.GetMapSize ();
-		for (int i=0; i < 3; i++) {
+		for (int i=0; i < 2; i++) {
 			var x = Random.Range (0, mapSize.x - 1);
 			var y = Random.Range (0, mapSize.y - 1);
 			EntityManager.CreateGoblin (new Vector2 (x, y));
