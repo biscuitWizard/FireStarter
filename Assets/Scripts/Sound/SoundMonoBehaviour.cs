@@ -7,6 +7,7 @@ public class SoundMonoBehaviour : MonoBehaviour {
 	public FMOD_StudioSystem StudioSystem {
 		get {
 			return FMOD_StudioSystem.instance;
+			//return GetComponentInParent<FMOD_StudioSystem>();
 		}
 	}
 
@@ -22,4 +23,5 @@ public class SoundMonoBehaviour : MonoBehaviour {
 
 		return playbackState == PLAYBACK_STATE.PLAYING;
 	}
+
 }

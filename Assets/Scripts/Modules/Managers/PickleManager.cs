@@ -12,6 +12,9 @@ public class PickleManager : BaseMonoBehaviour {
 	private float _lastSpawnTime = 0;
 	private int _pickleSpawnSecondsInterval = 10;
 
+	void Awake() {
+		Messenger.AddListener ("addPickle", () => _pickleCount++);
+	}
 	// Update is called once per frame
 	public override void GameUpdate () {
 	

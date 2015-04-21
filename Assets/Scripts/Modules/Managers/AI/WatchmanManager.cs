@@ -20,7 +20,7 @@ public class WatchmanManager : BaseMonoBehaviour {
 	}
 
 	public void GenerateWatchmen() {
-
+		EntityManager.CreateWatchman (new Vector2 (0, Map.MapSize.y - 1));
 	}
 
 	public void SpawnWatchman() {
@@ -38,15 +38,27 @@ public class WatchmanManager : BaseMonoBehaviour {
 			if(tile.IsOnFire()) {
 				// Die!
 				// We're now dead.
+				EntityManager.DestroyWatcham(watchmanEntity);
 			} else if(IsGoblinAdjacent(tile.Position, out goblinLocation)) {
 				// Attack a goblin!
+				Messenger.Broadcast ("playBillyBeat");
+				EntityManager.DestroyGoblin(EntityManager.GetGoblins().First (g => g.GetTile ().Position == goblinLocation));
 			} else if(_chasingGoblin != null) {
 				// Move closer to this goblin.
 				_lastMovedOnTick = GetTicks();
+				var path = _pathfinder.Navigate(tile.Position, _chasingGoblin.GetTile().Position);
+				if(path.Length < 2) {
+					_chasingGoblin = null;
+				} else {
+					EntityManager.MoveEntityTo(watchmanEntity, path[0]);
+				}
 			} else if(IsGoblinNearby(tile.Position, WatchmanSightRange, out _chasingGoblin)) { // Look for a goblin
 
 			} else { // Wander...
 				_lastMovedOnTick = GetTicks();
+				var legalMoves = EntityManager.getLegalMoves(tile.Position);
+				EntityManager.MoveEntityTo(watchmanEntity,
+				                           legalMoves.OrderBy (x => System.Guid.NewGuid()).First ());
 			}
 		}
 	}

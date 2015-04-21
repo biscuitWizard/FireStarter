@@ -83,9 +83,11 @@ public class GoblinManager : BaseMonoBehaviour {
 
 	public void GenerateGoblins() {
 		var mapSize = Game.GetMapSize ();
-		var x = Random.Range (0, mapSize.x - 1);
-		var y = Random.Range (0, mapSize.y - 1);
-		EntityManager.CreateGoblin (new Vector2 (x, y));
+		for (int i=0; i < 3; i++) {
+			var x = Random.Range (0, mapSize.x - 1);
+			var y = Random.Range (0, mapSize.y - 1);
+			EntityManager.CreateGoblin (new Vector2 (x, y));
+		}
 	}
 
 	public bool IsPickleNearby(Vector2 location, int distance, out Vector2 target) {

@@ -9,6 +9,7 @@ public class EntityManager : BaseMonoBehaviour {
 	public GameModule Game;
 
 	public TextAsset GoblinNames;
+	public int MaxGoblins = 5;
 
 	public GameObject GoblinPrefab;
 	public GameObject WatchmanPrefab;
@@ -74,11 +75,15 @@ public class EntityManager : BaseMonoBehaviour {
 	}
 
 	public void MoveEntityTo(EntityBase entity, Vector2 newPosition) {
+		try {
 		var tile = Map.GetTile ((int)newPosition.x, (int)newPosition.y);
 		entity.transform.SetParent (tile.transform);
 		entity.transform.localPosition = Vector2.zero;
 
 		//entity.SetLocation (newPosition);
+		} catch {
+			Debug.LogWarning (string.Format ("Entity: {0} tried to move to illegal space: {1}", entity.EntityName, newPosition));
+		}
 	}
 
 	public EntityBase CreateGoblin(Vector2 position) {

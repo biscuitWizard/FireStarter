@@ -22,16 +22,19 @@ public class FireSoundSystem : SoundMonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		_fireLoop = StudioSystem.GetEvent (FireLoop.path);
-		_fireStart = StudioSystem.GetEvent (FireStart.path);
-		_fireExtinguished = StudioSystem.GetEvent (FireExtinguished.path);
-		_buildingDestruction = StudioSystem.GetEvent (BuildingDestruction.path);
 		Messenger<Vector2, float>.AddListener ("playFireLoop", OnPlayFireLoop);
 		Messenger<Vector2>.AddListener ("stopFireLoop", OnStopFireLoop);
 		Messenger<Vector2, float>.AddListener ("setFireLoopIntensity", OnSetFireLoopIntensity);
 		Messenger.AddListener ("playFireStart", OnPlayFireStart);
 		Messenger.AddListener ("playBuildingDestruction", OnPlayBuildingDestruction);
 		Messenger.AddListener ("playFireExtinguished", OnPlayFireExtinguished);
+	}
+
+	void Start() {
+		_fireLoop = StudioSystem.GetEvent (FireLoop.path);
+		_fireStart = StudioSystem.GetEvent (FireStart.path);
+		_fireExtinguished = StudioSystem.GetEvent (FireExtinguished.path);
+		_buildingDestruction = StudioSystem.GetEvent (BuildingDestruction.path);
 	}
 	
 	// Update is called once per frame
@@ -109,7 +112,14 @@ public class FireSoundSystem : SoundMonoBehaviour {
 	}
 
 	void OnDestroy() {
+		Debug.Log ("Cleaning up sound...");
+		_fireLoop.stop (STOP_MODE.IMMEDIATE);
 		_fireLoop.release ();
+		_fireStart.stop (STOP_MODE.IMMEDIATE);
 		_fireStart.release ();
+		_fireExtinguished.stop (STOP_MODE.IMMEDIATE);
+		_fireExtinguished.release ();
+		_buildingDestruction.stop (STOP_MODE.IMMEDIATE);
+		_buildingDestruction.release ();
 	}
 }
